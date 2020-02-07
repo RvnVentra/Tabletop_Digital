@@ -1,0 +1,40 @@
+﻿
+
+img
+{
+	height: 120px;
+	margin: 12px;
+}
+
+.hand
+{
+	border: none;
+	background: none;
+}
+
+.hand img 
+{
+	height: 75px;
+	margin: 6px;
+}
+
+.hand img:hover
+{
+	height: 81px;
+	margin: 0px 4px;
+}
+
+#draw-card
+{
+	margin: 0 0 2em 2em;
+}
+
+h1
+{
+	margin: 1em;
+}
+
+h3
+{
+	margin: 1em;
+}

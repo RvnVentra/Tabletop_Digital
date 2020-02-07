@@ -15,9 +15,18 @@
 
   <ItemGroup>
     <!-- Don't publish the SPA source files, but do show them in the project files list -->
+    <Compile Remove="ClientApp\signalr\**" />
     <Content Remove="$(SpaRoot)**" />
+    <Content Remove="ClientApp\signalr\**" />
+    <EmbeddedResource Remove="ClientApp\signalr\**" />
     <None Remove="$(SpaRoot)**" />
+    <None Remove="ClientApp\signalr\**" />
     <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="ClientApp\signalr\signalr.js" />
+    <None Remove="ClientApp\signalr\signalr.min.js" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
