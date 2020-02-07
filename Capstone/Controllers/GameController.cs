@@ -16,14 +16,14 @@ namespace Capstone.Controllers
         [HttpGet("[action]")]
         public Table GetBoard()
         {
-            return UM.Board;
+            return UM.Table;
         }
 
         [HttpPost("DrawCard")]
         public Card DrawCard()
         {
             Card card = UM.DrawCard();
-            UM.Board.Hand.Add(card);
+            UM.Table.Hand.Add(card);
             Debug.Log("Card " + card.Color + ", " + card.Number + " Was Drawn");
 
             return card;

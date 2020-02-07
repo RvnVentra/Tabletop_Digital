@@ -1,6 +1,18 @@
 ﻿import React, { Component } from 'react';
 import './Hand.css';
 
+//const signalR = require('@aspnet/signalr');
+
+//let connection = new signalR.HubConnectionBuilder().withUrl("/gameHub").build();
+
+//connection.on("Receive", data =>
+//{
+//    console.log(data);
+//});
+
+//connection.start()
+//    .then(() => connection.invoke("Send", "Hello"));
+
 const COLORS =
 {
     0: "blue",

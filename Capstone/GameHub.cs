@@ -1,18 +1,22 @@
 ﻿using Microsoft.AspNetCore.SignalR;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Capstone
 {
     public class GameHub : Hub
     {
+        private static GameHub instance = null;
+        public static GameHub Instance { get { return instance ?? (instance = new GameHub()); } }
+        readonly GameManager GM = GameManager.Instance;
+
+
+        public async void UpdateTable()
+        {
+            await Clients.All.SendAsync("UpdateTable", GM.Table);
+        }
+
         public async void Send(string input)
         {
-            File.AppendAllText("Debug_Log.txt",
-                DateTime.Now.ToString("MM-dd_HH-mm-ss") + "\t: " + input + "\n");
+            Debug.Log(input);
 
             await Clients.All.SendAsync("Receive", input);
         }

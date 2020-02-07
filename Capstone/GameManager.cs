@@ -12,7 +12,7 @@ namespace Capstone
 
         readonly Random random = new Random();
         public List<Card> Deck = new List<Card>();
-        public Table Board = new Table();
+        public Table Table = new Table();
 
         private GameManager()
         {
@@ -28,14 +28,14 @@ namespace Capstone
             }
 
             ShuffleDeck();
-            Board.Hand = new List<Card>();
+            Table.Hand = new List<Card>();
 
             for (int i = 0; i < 7; i++)
             {
-                Board.Hand.Add(DrawCard());
+                Table.Hand.Add(DrawCard());
             }
 
-            Board.TopCard = DrawCard();
+            Table.TopCard = DrawCard();
         }
 
         public void ShuffleDeck()
