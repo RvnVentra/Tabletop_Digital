@@ -107,6 +107,7 @@ class Hand extends Component
                 this.state.connection.on('UpdateHand', (hand) =>
                 {
                     this.setState({ cards: hand, loading: false });
+                    console.log(hand);
                 });
 
                 this.state.connection.invoke("UpdateHand");
@@ -118,6 +119,12 @@ class Hand extends Component
     drawCard()
     {
         this.state.connection.invoke("DrawCard");
+    }
+
+    cardClick(i)
+    {
+        console.log(i);
+        this.state.connection.invoke("PlayCard", i);
     }
 
     render()
@@ -132,6 +139,17 @@ class Hand extends Component
                 var color = this.state.cards[i].color;
 
                 cards.push(<Card key={i} connection={this.state.connection} id={i} img={cardImgs[color][number]} />);
+
+                //cards.push(RenderCard(
+                //    {
+                //        onClick: (e) => this.cardClick(i, e),
+                //        img: cardImgs[color][number]
+                //    }));
+
+                //cards.push(
+                //    <button className="hand" key={i} onClick={(e) => this.cardClick(i, e)}>
+                //        <img src={cardImgs[color][number]} alt="card" />
+                //    </button>);
             }
         }
 
@@ -143,6 +161,15 @@ class Hand extends Component
             </div>
         );
     }
+}
+
+function RenderCard(props)
+{
+    return (
+        <button className="hand" onClick={props.onClick}>
+            <img src={props.img} alt="card" />
+        </button>
+    );
 }
 
 class Card extends Component

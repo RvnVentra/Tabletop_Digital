@@ -53,10 +53,17 @@ namespace Capstone
             return card;
         }
 
-        public void PlayCard(int cardID)
+        public bool PlayCard(int cardID)
         {
-            Table.TopCard = Table.Hand[cardID];
-            Table.Hand.RemoveAt(cardID);
+            if (Table.Hand[cardID].Color == Table.TopCard.Color || 
+                Table.Hand[cardID].Number == Table.TopCard.Number)
+            {
+                Table.TopCard = Table.Hand[cardID];
+                Table.Hand.RemoveAt(cardID);
+                return true;
+            }
+
+            return false;
         }
     }
 
