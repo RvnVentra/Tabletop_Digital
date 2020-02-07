@@ -11,19 +11,19 @@ namespace Capstone.Controllers
     [ApiController]
     public class GameController : ControllerBase
     {
-        readonly GameManager UM = GameManager.Instance;
+        readonly GameManager GM = GameManager.Instance;
 
         [HttpGet("[action]")]
         public Table GetBoard()
         {
-            return UM.Table;
+            return GM.Table;
         }
 
         [HttpPost("DrawCard")]
         public Card DrawCard()
         {
-            Card card = UM.DrawCard();
-            UM.Table.Hand.Add(card);
+            Card card = GM.DrawCard();
+            GM.Table.Hand.Add(card);
             Debug.Log("Card " + card.Color + ", " + card.Number + " Was Drawn");
 
             return card;

@@ -46,11 +46,17 @@ namespace Capstone
         public Card DrawCard()
         {
             if (Deck.Count <= 0)
-                return null;
+                return new Card { Number = 0, Color = 0 };
 
             Card card = Deck[0];
             Deck.RemoveAt(0);
             return card;
+        }
+
+        public void PlayCard(int cardID)
+        {
+            Table.TopCard = Table.Hand[cardID];
+            Table.Hand.RemoveAt(cardID);
         }
     }
 

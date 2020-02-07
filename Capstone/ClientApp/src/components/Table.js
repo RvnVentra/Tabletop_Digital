@@ -3,15 +3,6 @@ import './Table.css';
 
 const signalR = require('@aspnet/signalr');
 
-
-//connection.on("Receive", data =>
-//{
-//    console.log(data);
-//});
-
-//connection.start()
-//    .then(() => connection.invoke("Send", "Hello"));
-
 const COLORS =
 {
     0: "blue",
@@ -44,66 +35,49 @@ export class Table extends Component
     constructor(props)
     {
         super(props);
-        this.state = { connection: null, topCard: null, loading: true };
+        this.state =
+        {
+            connection: null,
+            topCard: null,
+            loading: true
+        };
     }
 
     componentDidMount()
     {
         this.setState({ connection: new signalR.HubConnectionBuilder().withUrl("/gameHub").build() }, () =>
         {
-            this.state.connection
-                .start()
-                .then(() =>
+            this.state.connection.start().then(() =>
+            {
+                console.log('Connection started!');
+
+                this.state.connection.on('UpdateTable', (table) =>
                 {
-                    console.log('Connection started!');
+                    this.setState({ topCard: table.topCard, loading: false });
+                });
 
-                    this.state.connection.on('UpdateTable', (table) =>
-                    {
-                        this.setState({ topCard: table.topCard, loading: false });
-                        console.log("TEST");
-                    });
-
-                    this.state.connection.invoke("UpdateTable");
-                })            
-                .catch(err => console.log('Error while establishing connection :('));
+                this.state.connection.invoke("UpdateTable");
+            })            
+            .catch(err => console.log('Error while establishing connection :('));
         });
     }
 
-    drawCard()
-    {
-        this.state.connection.invoke("Send", "Draw!");
-    }
-
-
     render()
     {
-        //var hand;
         let topCard;
 
         if (!this.state.loading)
         {
             topCard = <img src={cardImgs[this.state.topCard.color][this.state.topCard.number]} alt="card" />
-            //topCard = <img src={"images/cards/" + COLORS[this.state.topCard.color] + "_"
-            //    + this.state.topCard.number + ".png"} alt="card" />
-
-            //hand = [];
-
-            //for (var i = 0; i < this.state.hand.length; i++)
-            //{
-            //    var number = this.state.hand[i].number;
-            //    var color = this.state.hand[i].color;
-
-            //    hand.push(<Card key={i} id={i} img={cardImgs[color][number]} />);
-            //}
         }
 
         return (
             <div>
                 <h3>{statusText}</h3>
                 {topCard}
-                <button id="draw-card" onClick={(e) => this.drawCard(e)}>Draw Card</button>
-                <br />
                 
+                <br />
+                <Hand />
             </div>
         );
     }
@@ -116,9 +90,58 @@ class Hand extends Component
         super(props);
         this.state =
         {
-            id: this.props.id,
-            img: this.props.img
+            connection: null,
+            cards: [],
+            loading: true
         };
+    }
+
+    componentDidMount()
+    {
+        this.setState({ connection: new signalR.HubConnectionBuilder().withUrl("/gameHub").build() }, () =>
+        {
+            this.state.connection.start().then(() =>
+            {
+                console.log('Connection started!');
+
+                this.state.connection.on('UpdateHand', (hand) =>
+                {
+                    this.setState({ cards: hand, loading: false });
+                });
+
+                this.state.connection.invoke("UpdateHand");
+            })
+            .catch(err => console.log('Error while establishing connection :('));
+        });
+    }
+
+    drawCard()
+    {
+        this.state.connection.invoke("DrawCard");
+    }
+
+    render()
+    {
+        let cards = [];
+
+        if (!this.state.loading)
+        {
+            for (var i = 0; i < this.state.cards.length; i++)
+            {
+                var number = this.state.cards[i].number;
+                var color = this.state.cards[i].color;
+
+                cards.push(<Card key={i} connection={this.state.connection} id={i} img={cardImgs[color][number]} />);
+            }
+        }
+
+        return (
+            <div>
+                <button id="draw-card" onClick={(e) => this.drawCard(e)}>Draw Card</button>
+                <br />
+                {cards}
+            </div>
+        );
     }
 }
 
@@ -129,6 +152,7 @@ class Card extends Component
         super(props);
         this.state =
         {
+            connection: this.props.connection,
             id: this.props.id,
             img: this.props.img
         };
@@ -137,18 +161,7 @@ class Card extends Component
     cardClick(i)
     {
         console.log(i);
-
-
-        fetch('api/Game/PlayCard?cardID=' + i,
-            {
-                method: "POST"
-                //headers: { 'Content-Type': 'application/json' },
-                //cardID: '7'
-            })
-            .then(() =>
-            {
-                statusText = i + " has been clicked";
-            });
+        this.state.connection.invoke("PlayCard", i);
     }
 
     render()
