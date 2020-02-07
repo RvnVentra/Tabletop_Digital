@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.SignalR;
+using System.Collections.Generic;
 
 namespace Capstone
 {
@@ -6,7 +7,9 @@ namespace Capstone
     {
         private static GameHub instance = null;
         public static GameHub Instance { get { return instance ?? (instance = new GameHub()); } }
+
         readonly GameManager GM = GameManager.Instance;
+        readonly ChatManager CM = ChatManager.Instance;
 
         public async void UpdateTable()
         {
@@ -16,6 +19,11 @@ namespace Capstone
         public async void UpdateHand()
         {
             await Clients.Caller.SendAsync("UpdateHand", GM.Table.Hand);
+        }
+
+        public async void UpdateChat()
+        {
+            await Clients.All.SendAsync("UpdateChat", CM.ChatBox);
         }
 
         public void DrawCard()
@@ -33,6 +41,12 @@ namespace Capstone
 
             UpdateTable();
             UpdateHand();
+        }
+
+        public void Chat(string input)
+        {
+            CM.NewMessage(input);
+            UpdateChat();
         }
 
         public async void Send(string input)

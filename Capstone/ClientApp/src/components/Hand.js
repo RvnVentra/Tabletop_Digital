@@ -1,17 +1,7 @@
 ﻿import React, { Component } from 'react';
 import './Hand.css';
 
-//const signalR = require('@aspnet/signalr');
-
-//let connection = new signalR.HubConnectionBuilder().withUrl("/gameHub").build();
-
-//connection.on("Receive", data =>
-//{
-//    console.log(data);
-//});
-
-//connection.start()
-//    .then(() => connection.invoke("Send", "Hello"));
+const signalR = require('@aspnet/signalr');
 
 const COLORS =
 {
@@ -21,7 +11,6 @@ const COLORS =
     3: "yellow"
 };
 
-var statusText = " ";
 var cardImgs = new Array(4);
 cardImgs[0] = [];
 cardImgs[1] = [];
@@ -30,18 +19,37 @@ cardImgs[3] = [];
 
 export class Hand extends Component
 {
-    static displayName = Hand.name;
-
     constructor(props)
     {
         super(props);
-        this.state = { hand: [], topCard: null, loading: true };
+        this.state =
+        {
+            connection: null,
+            cards: [],
+            loading: true
+        };
     }
 
     componentDidMount()
     {
-        this.getBoard();
+        this.setState({ connection: new signalR.HubConnectionBuilder().withUrl("/gameHub").build() }, () =>
+        {
+            this.state.connection.start().then(() =>
+            {
+                console.log('Connection started!');
 
+                this.state.connection.on('UpdateHand', (hand) =>
+                {
+                    this.setState({ cards: hand, loading: false });
+                    console.log(hand);
+                });
+
+                this.state.connection.invoke("UpdateHand");
+            })
+                .catch(err => console.log('Error while establishing connection :('));
+        });
+
+        //Preload card image files
         for (let i = 0; i < 4; i++)
         {
             for (let n = 0; n < 10; n++)
@@ -54,66 +62,58 @@ export class Hand extends Component
 
     drawCard()
     {
-        fetch('api/Game/DrawCard',
-            {
-                method: "POST"
-            })
-            .then(() =>
-            {
-                console.log("Draw Card");
-                this.getBoard();
-            });
+        this.state.connection.invoke("DrawCard");
     }
 
-    getBoard()
+    cardClick(i)
     {
-        fetch('api/Game/GetBoard')
-            .then(response => response.json())
-            .then(board =>
-            {
-                this.setState(
-                    {
-                        hand: board.hand,
-                        topCard: board.topCard,
-                        loading: false
-                    });
-            });
+        console.log(i);
+        this.state.connection.invoke("PlayCard", i);
     }
 
     render()
     {
-        var hand;
-        var topCard;
-
-        //console.log("RENDERING NOW");
+        let cards = [];
 
         if (!this.state.loading)
         {
-            topCard = <img src={cardImgs[this.state.topCard.color][this.state.topCard.number]} alt="card" />
-            //topCard = <img src={"images/cards/" + COLORS[this.state.topCard.color] + "_"
-            //    + this.state.topCard.number + ".png"} alt="card" />
-
-            hand = [];
-
-            for (var i = 0; i < this.state.hand.length; i++)
+            for (var i = 0; i < this.state.cards.length; i++)
             {
-                var number = this.state.hand[i].number;
-                var color = this.state.hand[i].color;
+                var number = this.state.cards[i].number;
+                var color = this.state.cards[i].color;
 
-                hand.push(<Card key={i} id={i} img={cardImgs[color][number]} />);
+                cards.push(<Card key={i} connection={this.state.connection} id={i} img={cardImgs[color][number]} />);
+
+                //cards.push(RenderCard(
+                //    {
+                //        onClick: (e) => this.cardClick(i, e),
+                //        img: cardImgs[color][number]
+                //    }));
+
+                //cards.push(
+                //    <button className="hand" key={i} onClick={(e) => this.cardClick(i, e)}>
+                //        <img src={cardImgs[color][number]} alt="card" />
+                //    </button>);
             }
         }
 
         return (
             <div>
-                <h3>{statusText}</h3>
-                {topCard}
                 <button id="draw-card" onClick={(e) => this.drawCard(e)}>Draw Card</button>
                 <br />
-                {hand}
+                {cards}
             </div>
         );
     }
+}
+
+function RenderCard(props)
+{
+    return (
+        <button className="hand" onClick={props.onClick}>
+            <img src={props.img} alt="card" />
+        </button>
+    );
 }
 
 class Card extends Component
@@ -123,27 +123,16 @@ class Card extends Component
         super(props);
         this.state =
         {
+            connection: this.props.connection,
             id: this.props.id,
             img: this.props.img
         };
     }
 
-    // axios.get(`http://www.reddit.com/r/${this.props.subreddit}.json`)
     cardClick(i)
     {
         console.log(i);
-
-
-        fetch('api/Game/PlayCard?cardID=' + i,
-            {
-                method: "POST"
-                //headers: { 'Content-Type': 'application/json' },
-                //cardID: '7'
-            })
-            .then(() =>
-            {
-                statusText = i + " has been clicked";
-            });
+        this.state.connection.invoke("PlayCard", i);
     }
 
     render()
