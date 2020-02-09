@@ -12,11 +12,11 @@ namespace Capstone
 
         public readonly List<Message> ChatBox = new List<Message>();
 
-        public void NewMessage(string input)
+        public void NewMessage(string author, string input)
         {
             ChatBox.Add(new Message
             {
-                Author = "Anonymous",
+                Author = author,
                 Value = input
             });
         }

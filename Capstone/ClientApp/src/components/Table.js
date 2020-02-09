@@ -1,8 +1,7 @@
 ﻿import React, { Component } from 'react';
 import { Hand } from './Hand';
 import { ChatBox } from './ChatBox';
-import { DebugLog } from './DebugLog';
-import './Table.css';
+import { PlayerList } from './PlayerList';
 
 const signalR = require('@aspnet/signalr');
 
@@ -39,11 +38,22 @@ export class Table extends Component
 
     componentDidMount()
     {
+        //Preload card image files
+        for (let i = 0; i < 4; i++)
+        {
+            for (let n = 0; n < 10; n++)
+            {
+                cardImgs[i][n] = new Image();
+                cardImgs[i][n] = "images/cards/" + COLORS[i] + "_" + n + ".png";
+            }
+        }
+
         this.setState({ connection: new signalR.HubConnectionBuilder().withUrl("/gameHub").build() }, () =>
         {
             this.state.connection.start().then(() =>
             {
                 console.log('Connection started!');
+                //console.log(this.state.connection.hub.id);
 
                 this.state.connection.on('UpdateTable', (table) =>
                 {
@@ -54,42 +64,27 @@ export class Table extends Component
             })            
             .catch(err => console.log('Error while establishing connection :('));
         });
-
-        //Preload card image files
-        for (let i = 0; i < 4; i++)
-        {
-            for (let n = 0; n < 10; n++)
-            {
-                cardImgs[i][n] = new Image();
-                cardImgs[i][n] = "images/cards/" + COLORS[i] + "_" + n + ".png";
-            }
-        }
     }
 
     render()
-    {
-        let topCard;
-        let chatBox;
-
-        if (!this.state.loading)
-        {
-            topCard = <img src={cardImgs[this.state.topCard.color][this.state.topCard.number]} alt="card" />;
-            chatBox = <ChatBox connection={this.state.connection} />;
-        }
-
+    {  
+        if (this.state.loading)
+            return (<div><h1> LOADING </h1></div>);
+        
         return (
             <div>
-                <div className= "left">
-                    {topCard}
-                    <br/>
-                    <Hand />
+                <div className="left">
+                    <img src={cardImgs[this.state.topCard.color][this.state.topCard.number]} alt="card" />
+                    <br />
+                    <Hand connection={this.state.connection} />
                 </div>
-                
-                <div className= "right">
-                    {chatBox}
+
+                <div className="right">
+                    <PlayerList connection={this.state.connection} />
+                    <ChatBox connection={this.state.connection} />
                 </div>
             </div>
-        );
+        ); 
     }
 }
 

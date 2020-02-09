@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Capstone
 {
@@ -13,6 +12,9 @@ namespace Capstone
         readonly Random random = new Random();
         public List<Card> Deck = new List<Card>();
         public Table Table = new Table();
+
+        public List<Player> Players = new List<Player>();
+        public Dictionary<string, List<Card>> PlayerCards = new Dictionary<string, List<Card>>();
 
         private GameManager()
         {
@@ -28,14 +30,29 @@ namespace Capstone
             }
 
             ShuffleDeck();
-            Table.Hand = new List<Card>();
+            Table.TopCard = DrawCard();
+        }
+
+        public void AddPlayer(string id)
+        {
+            PlayerCards[id] = new List<Card>();
 
             for (int i = 0; i < 7; i++)
             {
-                Table.Hand.Add(DrawCard());
+                PlayerCards[id].Add(DrawCard());
             }
 
-            Table.TopCard = DrawCard();
+            Players.Add(new Player
+            {
+                ConnectionId = id,
+                CardCount = PlayerCards[id].Count
+            });
+        }
+
+        public void RemovePlayer(string id)
+        {
+            Players.Remove(Players.Single(p => p.ConnectionId == id));
+            PlayerCards.Remove(id);
         }
 
         public void ShuffleDeck()
@@ -47,28 +64,37 @@ namespace Capstone
         {
             if (Deck.Count <= 0)
                 return GetRandomCard();
-
+            
             Card card = Deck[0];
+            Debug.Log("Card " + card.Color + ", " + card.Number + " Was Drawn");
             Deck.RemoveAt(0);
             return card;
         }
 
+        public Card DrawCard(string id)
+        {
+            Players.Single(p => p.ConnectionId == id).CardCount++;
+            PlayerCards[id].Add(DrawCard());
+            return PlayerCards[id].Last();
+        }
+
         public Card GetRandomCard()
         {
-            return new Card 
-            { 
-                Number = random.Next(0, 10), 
-                Color = random.Next(0, 4) 
+            return new Card
+            {
+                Number = random.Next(0, 10),
+                Color = random.Next(0, 4)
             };
         }
 
-        public bool PlayCard(int cardID)
+        public bool PlayCard(string playerID, int cardID)
         {
-            if (Table.Hand[cardID].Color == Table.TopCard.Color || 
-                Table.Hand[cardID].Number == Table.TopCard.Number)
+            if (PlayerCards[playerID][cardID].Color == Table.TopCard.Color ||
+                PlayerCards[playerID][cardID].Number == Table.TopCard.Number)
             {
-                Table.TopCard = Table.Hand[cardID];
-                Table.Hand.RemoveAt(cardID);
+                Table.TopCard = PlayerCards[playerID][cardID];
+                PlayerCards[playerID].RemoveAt(cardID);
+                Players.Single(p => p.ConnectionId == playerID).CardCount--;
                 return true;
             }
 
@@ -76,9 +102,14 @@ namespace Capstone
         }
     }
 
+    public class Player
+    {
+        public string ConnectionId { get; set; }
+        public int CardCount { get; set; }
+    }
+
     public class Table
     {
-        public List<Card> Hand { get; set; }
         public Card TopCard { get; set; }
     }
 
@@ -87,6 +118,6 @@ namespace Capstone
         public int Number { get; set; }
         public int Color { get; set; }
     }
-} 
-    
+}
+
 

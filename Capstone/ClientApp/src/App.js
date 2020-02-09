@@ -15,10 +15,11 @@ export default class App extends Component
         return (
             <Layout>
                 <Route exact path='/' component={Table} />
-                <Route path='/table' component={Table} />
-                <Route path='/Hand' component={Hand} />
                 <Route path='/debug' component={DebugLog} />
             </Layout>
         );
     }
 }
+
+    //<Route path='/table' component={Table} />
+    //<Route path='/Hand' component={Hand} />

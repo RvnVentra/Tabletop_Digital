@@ -26,7 +26,10 @@ export class ChatBox extends Component
 
     sendMessage = () =>
     {
-        this.state.connection.invoke('Chat', this.state.input)
+        console.log(this.state.id);
+
+        this.state.connection
+            .invoke('Chat', this.state.input)
             .catch(err => console.error(err));
 
         this.setState({ input: '' });

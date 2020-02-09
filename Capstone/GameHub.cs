@@ -1,18 +1,36 @@
 ﻿using Microsoft.AspNetCore.SignalR;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Capstone
 {
     public class GameHub : Hub
     {
-        private static GameHub instance = null;
-        public static GameHub Instance { get { return instance ?? (instance = new GameHub()); } }
-
         readonly GameManager GM = GameManager.Instance;
         readonly ChatManager CM = ChatManager.Instance;
 
-        //public static ConcurrentDictionary<string, MyUserType> MyUsers = new ConcurrentDictionary<string, MyUserType>();
+        //public static ConcurrentDictionary<string, User> Users = new ConcurrentDictionary<string, User>();
+
+        public override Task OnConnectedAsync()
+        {
+            //Users.TryAdd(Context.ConnectionId, new User() { ConnectionId = Context.ConnectionId });
+            Debug.Log("User Connected: " + Context.ConnectionId);
+
+            GM.AddPlayer(Context.ConnectionId);
+            return base.OnConnectedAsync();
+        }
+
+        public override Task OnDisconnectedAsync(Exception exception)
+        {
+            //Context.ConnectionId
+            GM.RemovePlayer(Context.ConnectionId);
+            UpdatePlayerList();
+            return base.OnDisconnectedAsync(exception);
+        }
+
+        //---------------- Update Methods ------------------
 
         public async void UpdateTable()
         {
@@ -21,7 +39,7 @@ namespace Capstone
 
         public async void UpdateHand()
         {
-            await Clients.Caller.SendAsync("UpdateHand", GM.Table.Hand);
+            await Clients.Caller.SendAsync("UpdateHand", GM.PlayerCards[Context.ConnectionId]);
         }
 
         public async void UpdateChat()
@@ -29,38 +47,41 @@ namespace Capstone
             await Clients.All.SendAsync("UpdateChat", CM.ChatBox);
         }
 
+        public async void UpdatePlayerList()
+        {
+            await Clients.All.SendAsync("UpdatePlayerList", GM.Players);
+        }
+
+        //---------------- Call Methods ------------------
+
         public void DrawCard()
         {
-            Card card = GM.DrawCard();
-            GM.Table.Hand.Add(card);
-            Debug.Log("Card " + card.Color + ", " + card.Number + " Was Drawn");
+            GM.DrawCard(Context.ConnectionId);
 
+            UpdatePlayerList();
             UpdateHand();
         }
 
         public void PlayCard(int cardID)
         {
-            GM.PlayCard(cardID);
+            GM.PlayCard(Context.ConnectionId, cardID);
             Debug.Log(cardID + " Was Played");
+
+            UpdatePlayerList();
             UpdateTable();
             UpdateHand();
         }
 
         public void Chat(string input)
         {
-            // Send the current clients connection id to your external service
-            //Context.ConnectionId
-            
+            CM.NewMessage(Context.ConnectionId, input);
 
-            CM.NewMessage(input);
             UpdateChat();
         }
+    }
 
-        public async void Send(string input)
-        {
-            Debug.Log(input);
-
-            await Clients.All.SendAsync("Receive", input);
-        }
+    public class User
+    {
+        public string ConnectionId { get; set; }
     }
 }
