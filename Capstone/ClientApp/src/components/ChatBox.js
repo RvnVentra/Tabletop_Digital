@@ -48,9 +48,8 @@ export class ChatBox extends Component
                 </div>);
         }
 
-
         return (
-            <div>
+            <div id="chat-box">
                 <br />
                 <input id= "chatInput"
                     type="text"

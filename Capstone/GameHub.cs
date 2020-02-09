@@ -11,14 +11,12 @@ namespace Capstone
         readonly GameManager GM = GameManager.Instance;
         readonly ChatManager CM = ChatManager.Instance;
 
-        //public static ConcurrentDictionary<string, User> Users = new ConcurrentDictionary<string, User>();
+        public static ConcurrentDictionary<string, User> Users = new ConcurrentDictionary<string, User>();
+        
 
         public override Task OnConnectedAsync()
         {
-            //Users.TryAdd(Context.ConnectionId, new User() { ConnectionId = Context.ConnectionId });
             Debug.Log("User Connected: " + Context.ConnectionId);
-
-            GM.AddPlayer(Context.ConnectionId);
             return base.OnConnectedAsync();
         }
 
@@ -54,6 +52,18 @@ namespace Capstone
 
         //---------------- Call Methods ------------------
 
+        public async void EnterName(string name)
+        {
+            Users.TryAdd(Context.ConnectionId, new User() 
+            { 
+                ConnectionId = Context.ConnectionId,
+                Username = name != "" ? name : "Anonymous"
+            });
+
+            GM.AddPlayer(Context.ConnectionId, name != "" ? name : "Anonymous");
+            await Clients.Caller.SendAsync("JoinGame");
+        }
+
         public void DrawCard()
         {
             GM.DrawCard(Context.ConnectionId);
@@ -74,7 +84,7 @@ namespace Capstone
 
         public void Chat(string input)
         {
-            CM.NewMessage(Context.ConnectionId, input);
+            CM.NewMessage(Users[Context.ConnectionId].Username, input);
 
             UpdateChat();
         }
@@ -83,5 +93,6 @@ namespace Capstone
     public class User
     {
         public string ConnectionId { get; set; }
+        public string Username { get; set; }
     }
 }

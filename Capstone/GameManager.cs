@@ -33,7 +33,7 @@ namespace Capstone
             Table.TopCard = DrawCard();
         }
 
-        public void AddPlayer(string id)
+        public void AddPlayer(string id, string name)
         {
             PlayerCards[id] = new List<Card>();
 
@@ -45,14 +45,19 @@ namespace Capstone
             Players.Add(new Player
             {
                 ConnectionId = id,
+                Name = name,
                 CardCount = PlayerCards[id].Count
             });
         }
 
         public void RemovePlayer(string id)
         {
-            Players.Remove(Players.Single(p => p.ConnectionId == id));
-            PlayerCards.Remove(id);
+            try
+            {
+                Players.Remove(Players.Single(p => p.ConnectionId == id));
+                PlayerCards.Remove(id);
+            }
+            catch { }
         }
 
         public void ShuffleDeck()
@@ -105,6 +110,7 @@ namespace Capstone
     public class Player
     {
         public string ConnectionId { get; set; }
+        public string Name { get; set; }
         public int CardCount { get; set; }
     }
 

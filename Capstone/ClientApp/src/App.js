@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import { Route } from 'react-router';
 import { Layout } from './components/Layout';
-import { Home } from './components/Home';
-import { Table } from './components/Table';
-import { Hand } from './components/Hand';
+import { Home } from './components/Home'; 
+import { Game } from './components/Game';
 import { DebugLog } from './components/DebugLog';
 
 export default class App extends Component
@@ -14,7 +13,7 @@ export default class App extends Component
     {
         return (
             <Layout>
-                <Route exact path='/' component={Table} />
+                <Route exact path='/' component={Game} />
                 <Route path='/debug' component={DebugLog} />
             </Layout>
         );

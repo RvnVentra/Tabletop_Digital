@@ -31,7 +31,7 @@ export class PlayerList extends Component
         {
             players.push(
                 <tr key={i}>
-                    <td>{this.state.players[i].connectionId}</td>
+                    <td>{this.state.players[i].name}</td>
                     <td>{this.state.players[i].cardCount}</td>
                 </tr>);
         }

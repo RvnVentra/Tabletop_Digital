@@ -1,9 +1,4 @@
 ﻿import React, { Component } from 'react';
-import { Hand } from './Hand';
-import { ChatBox } from './ChatBox';
-import { PlayerList } from './PlayerList';
-
-const signalR = require('@aspnet/signalr');
 
 const COLORS =
 {
@@ -30,7 +25,7 @@ export class Table extends Component
         super(props);
         this.state =
         {
-            connection: null,
+            connection: this.props.connection,
             topCard: null,
             loading: true
         };
@@ -48,41 +43,22 @@ export class Table extends Component
             }
         }
 
-        this.setState({ connection: new signalR.HubConnectionBuilder().withUrl("/gameHub").build() }, () =>
+        this.state.connection.on('UpdateTable', (table) =>
         {
-            this.state.connection.start().then(() =>
-            {
-                console.log('Connection started!');
-                //console.log(this.state.connection.hub.id);
-
-                this.state.connection.on('UpdateTable', (table) =>
-                {
-                    this.setState({ topCard: table.topCard, loading: false });
-                });
-
-                this.state.connection.invoke("UpdateTable");
-            })            
-            .catch(err => console.log('Error while establishing connection :('));
+            this.setState({ topCard: table.topCard, loading: false });
         });
+
+        this.state.connection.invoke("UpdateTable");
     }
 
     render()
     {  
         if (this.state.loading)
-            return (<div><h1> LOADING </h1></div>);
-        
-        return (
-            <div>
-                <div className="left">
-                    <img src={cardImgs[this.state.topCard.color][this.state.topCard.number]} alt="card" />
-                    <br />
-                    <Hand connection={this.state.connection} />
-                </div>
+            return false;
 
-                <div className="right">
-                    <PlayerList connection={this.state.connection} />
-                    <ChatBox connection={this.state.connection} />
-                </div>
+        return (
+            <div>   
+                <img src={cardImgs[this.state.topCard.color][this.state.topCard.number]} alt="card" />
             </div>
         ); 
     }
