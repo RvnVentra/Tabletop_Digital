@@ -17,9 +17,7 @@ export class ChatBox extends Component
     {
         this.state.connection.on('UpdateChat', (data) =>
         {
-            console.log(data);
-            //const text = `${receivedMessage}`;
-            //const chatBox = this.state.messages.concat([text]);
+            //console.log(data);
             this.setState({ chatBox: data });
         }); 
 
@@ -67,9 +65,3 @@ export class ChatBox extends Component
         );
     }
 }
-
-//{
-//    this.state.messages.map((message, index) => (
-//        <span style={{ display: 'block' }} key={index}> {message} </span>
-//    ))
-//}

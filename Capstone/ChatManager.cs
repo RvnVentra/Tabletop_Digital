@@ -14,7 +14,6 @@ namespace Capstone
 
         public void NewMessage(string input)
         {
-            Debug.Log(input);
             ChatBox.Add(new Message
             {
                 Author = "Anonymous",

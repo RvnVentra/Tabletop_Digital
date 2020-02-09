@@ -46,11 +46,20 @@ namespace Capstone
         public Card DrawCard()
         {
             if (Deck.Count <= 0)
-                return new Card { Number = 0, Color = 0 };
+                return GetRandomCard();
 
             Card card = Deck[0];
             Deck.RemoveAt(0);
             return card;
+        }
+
+        public Card GetRandomCard()
+        {
+            return new Card 
+            { 
+                Number = random.Next(0, 10), 
+                Color = random.Next(0, 4) 
+            };
         }
 
         public bool PlayCard(int cardID)

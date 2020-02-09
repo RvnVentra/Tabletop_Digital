@@ -4,6 +4,7 @@ import { Layout } from './components/Layout';
 import { Home } from './components/Home';
 import { Table } from './components/Table';
 import { Hand } from './components/Hand';
+import { DebugLog } from './components/DebugLog';
 
 export default class App extends Component
 {
@@ -13,9 +14,10 @@ export default class App extends Component
     {
         return (
             <Layout>
-                <Route path='/' component={Table} />
+                <Route exact path='/' component={Table} />
                 <Route path='/table' component={Table} />
                 <Route path='/Hand' component={Hand} />
+                <Route path='/debug' component={DebugLog} />
             </Layout>
         );
     }

@@ -67,8 +67,17 @@ export class Hand extends Component
 
     cardClick(i)
     {
-        console.log(i);
+        //console.log("cardClick" + i);
         this.state.connection.invoke("PlayCard", i);
+    }
+
+    renderCard(props)
+    {
+        return (
+            <button key={props.key} className="hand" onClick={(e) => this.cardClick(props.key, e)}>
+                <img src={props.img} alt="card" />
+            </button>
+        );
     }
 
     render()
@@ -82,18 +91,11 @@ export class Hand extends Component
                 var number = this.state.cards[i].number;
                 var color = this.state.cards[i].color;
 
-                cards.push(<Card key={i} connection={this.state.connection} id={i} img={cardImgs[color][number]} />);
-
-                //cards.push(RenderCard(
-                //    {
-                //        onClick: (e) => this.cardClick(i, e),
-                //        img: cardImgs[color][number]
-                //    }));
-
-                //cards.push(
-                //    <button className="hand" key={i} onClick={(e) => this.cardClick(i, e)}>
-                //        <img src={cardImgs[color][number]} alt="card" />
-                //    </button>);
+                cards.push(this.renderCard(
+                    {
+                        key: i,
+                        img: cardImgs[color][number]
+                    }));
             }
         }
 
@@ -103,44 +105,6 @@ export class Hand extends Component
                 <br />
                 {cards}
             </div>
-        );
-    }
-}
-
-function RenderCard(props)
-{
-    return (
-        <button className="hand" onClick={props.onClick}>
-            <img src={props.img} alt="card" />
-        </button>
-    );
-}
-
-class Card extends Component
-{
-    constructor(props)
-    {
-        super(props);
-        this.state =
-        {
-            connection: this.props.connection,
-            id: this.props.id,
-            img: this.props.img
-        };
-    }
-
-    cardClick(i)
-    {
-        console.log(i);
-        this.state.connection.invoke("PlayCard", i);
-    }
-
-    render()
-    {
-        return (
-            <button className="hand" onClick={(e) => this.cardClick(this.state.id, e)}>
-                <img src={this.state.img} alt="card" />
-            </button>
         );
     }
 }

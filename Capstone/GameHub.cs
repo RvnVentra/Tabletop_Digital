@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.SignalR;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 
 namespace Capstone
@@ -10,6 +11,8 @@ namespace Capstone
 
         readonly GameManager GM = GameManager.Instance;
         readonly ChatManager CM = ChatManager.Instance;
+
+        //public static ConcurrentDictionary<string, MyUserType> MyUsers = new ConcurrentDictionary<string, MyUserType>();
 
         public async void UpdateTable()
         {
@@ -38,13 +41,17 @@ namespace Capstone
         public void PlayCard(int cardID)
         {
             GM.PlayCard(cardID);
-
+            Debug.Log(cardID + " Was Played");
             UpdateTable();
             UpdateHand();
         }
 
         public void Chat(string input)
         {
+            // Send the current clients connection id to your external service
+            //Context.ConnectionId
+            
+
             CM.NewMessage(input);
             UpdateChat();
         }

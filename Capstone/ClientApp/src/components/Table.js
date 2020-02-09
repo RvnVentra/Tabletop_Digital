@@ -1,6 +1,7 @@
 ﻿import React, { Component } from 'react';
 import { Hand } from './Hand';
 import { ChatBox } from './ChatBox';
+import { DebugLog } from './DebugLog';
 import './Table.css';
 
 const signalR = require('@aspnet/signalr');
