@@ -3,6 +3,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace Capstone
 {
@@ -54,14 +55,17 @@ namespace Capstone
 
         public async void EnterName(string name)
         {
-            Users.TryAdd(Context.ConnectionId, new User() 
-            { 
+            int gameID = Users.Count + 1;
+
+            Users.TryAdd(Context.ConnectionId, new User()
+            {
                 ConnectionId = Context.ConnectionId,
-                Username = name != "" ? name : "Anonymous"
+                Username = name != "" ? name : "Anonymous",
+                GameID = gameID
             });
 
             GM.AddPlayer(Context.ConnectionId, name != "" ? name : "Anonymous");
-            await Clients.Caller.SendAsync("JoinGame");
+            await Clients.Caller.SendAsync("JoinGame", gameID);
         }
 
         public void DrawCard()
@@ -93,6 +97,7 @@ namespace Capstone
     public class User
     {
         public string ConnectionId { get; set; }
+        public int GameID { get; set; }
         public string Username { get; set; }
     }
 }

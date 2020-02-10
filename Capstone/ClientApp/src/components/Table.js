@@ -1,20 +1,6 @@
 ﻿import React, { Component } from 'react';
 
-const COLORS =
-{
-    0: "blue",
-    1: "red",
-    2: "green",
-    3: "yellow"
-};
-
-var statusText = " ";
-var cardImgs = new Array(4);
-cardImgs[0] = [];
-cardImgs[1] = [];
-cardImgs[2] = [];
-cardImgs[3] = [];
-
+var cardImgs;
 
 export class Table extends Component
 {
@@ -29,26 +15,22 @@ export class Table extends Component
             topCard: null,
             loading: true
         };
+
+        cardImgs = this.props.cardImgs;
     }
 
     componentDidMount()
     {
-        //Preload card image files
-        for (let i = 0; i < 4; i++)
-        {
-            for (let n = 0; n < 10; n++)
-            {
-                cardImgs[i][n] = new Image();
-                cardImgs[i][n] = "images/cards/" + COLORS[i] + "_" + n + ".png";
-            }
-        }
-
         this.state.connection.on('UpdateTable', (table) =>
         {
-            this.setState({ topCard: table.topCard, loading: false });
+            this.setState(
+                {
+                    topCard: table.topCard,
+                    loading: false
+                });
         });
 
-        this.state.connection.invoke("UpdateTable");
+        this.state.connection.invoke('UpdateTable');
     }
 
     render()
@@ -63,4 +45,3 @@ export class Table extends Component
         ); 
     }
 }
-

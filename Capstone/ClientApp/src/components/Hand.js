@@ -1,18 +1,6 @@
 ﻿import React, { Component } from 'react';
 
-const COLORS =
-{
-    0: "blue",
-    1: "red",
-    2: "green",
-    3: "yellow"
-};
-
-var cardImgs = new Array(4);
-cardImgs[0] = [];
-cardImgs[1] = [];
-cardImgs[2] = [];
-cardImgs[3] = [];
+var cardImgs;
 
 export class Hand extends Component
 {
@@ -22,31 +10,23 @@ export class Hand extends Component
         this.state =
         {
             connection: this.props.connection,
-            id: null,
             cards: [],
             loading: true
         };
+
+        cardImgs = this.props.cardImgs;
     }
 
     componentDidMount()
     {
-        this.setState({ id: this.state.connection.id });
-
         this.state.connection.on('UpdateHand', (hand) =>
         {
-            this.setState({ cards: hand, loading: false });
-            //console.log(hand);
+            this.setState(
+                {
+                    cards: hand,
+                    loading: false
+                });
         });
-       
-        //Preload card image files
-        for (let i = 0; i < 4; i++)
-        {
-            for (let n = 0; n < 10; n++)
-            {
-                cardImgs[i][n] = new Image();
-                cardImgs[i][n] = "images/cards/" + COLORS[i] + "_" + n + ".png";
-            }
-        }
 
         this.state.connection.invoke("UpdateHand");
     }

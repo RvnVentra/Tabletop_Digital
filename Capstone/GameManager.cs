@@ -22,7 +22,7 @@ namespace Capstone
             {
                 Deck.Add(new Card { Number = 0, Color = i });
 
-                for (int j = 1; j < 10; j++)
+                for (int j = 1; j < 13; j++)
                 {
                     Deck.Add(new Card { Number = j, Color = i });
                     Deck.Add(new Card { Number = j, Color = i });
@@ -60,6 +60,11 @@ namespace Capstone
             catch { }
         }
 
+        public bool CheckTurn(string id)
+        {
+            return Players.First().ConnectionId == id;
+        }
+
         public void ShuffleDeck()
         {
             Deck = Deck.OrderBy(a => Guid.NewGuid()).ToList();
@@ -76,31 +81,51 @@ namespace Capstone
             return card;
         }
 
-        public Card DrawCard(string id)
+        public bool DrawCard(string id)
         {
-            Players.Single(p => p.ConnectionId == id).CardCount++;
-            PlayerCards[id].Add(DrawCard());
-            return PlayerCards[id].Last();
+            if (CheckTurn(id))
+            {
+                Players.Single(p => p.ConnectionId == id).CardCount++;
+                PlayerCards[id].Add(DrawCard());
+                return true;
+            }
+
+            return false;
         }
 
         public Card GetRandomCard()
         {
             return new Card
             {
-                Number = random.Next(0, 10),
+                Number = random.Next(0, 13),
                 Color = random.Next(0, 4)
             };
         }
 
         public bool PlayCard(string playerID, int cardID)
         {
-            if (PlayerCards[playerID][cardID].Color == Table.TopCard.Color ||
-                PlayerCards[playerID][cardID].Number == Table.TopCard.Number)
+            if (CheckTurn(playerID))
             {
-                Table.TopCard = PlayerCards[playerID][cardID];
-                PlayerCards[playerID].RemoveAt(cardID);
-                Players.Single(p => p.ConnectionId == playerID).CardCount--;
-                return true;
+                Player cPlayer = Players.Single(p => p.ConnectionId == playerID);
+
+                if (PlayerCards[playerID][cardID].Color == Table.TopCard.Color ||
+                    PlayerCards[playerID][cardID].Number == Table.TopCard.Number)
+                {
+                    //Played card becomes top card
+                    Table.TopCard = PlayerCards[playerID][cardID];
+                    PlayerCards[playerID].RemoveAt(cardID);
+
+                    //Update card count
+                    cPlayer.CardCount--;
+
+                    //Card effects
+
+                    //Move current player to bottom of the turn order
+                    Players.Add(cPlayer);
+                    Players.Remove(cPlayer);
+
+                    return true;
+                }
             }
 
             return false;
