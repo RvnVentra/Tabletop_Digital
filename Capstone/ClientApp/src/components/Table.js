@@ -13,6 +13,7 @@ export class Table extends Component
         {
             connection: this.props.connection,
             topCard: null,
+            statusText: "",
             loading: true
         };
 
@@ -30,6 +31,11 @@ export class Table extends Component
                 });
         });
 
+        this.state.connection.on('TableStatus', (text) =>
+        {
+            this.setState({ statusText: text });
+        });
+
         this.state.connection.invoke('UpdateTable');
     }
 
@@ -40,6 +46,7 @@ export class Table extends Component
 
         return (
             <div>   
+                <div id="table-status"><h3>{this.state.statusText}</h3></div>
                 <img src={cardImgs[this.state.topCard.color][this.state.topCard.number]} alt="card" />
             </div>
         ); 

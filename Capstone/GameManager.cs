@@ -112,18 +112,49 @@ namespace Capstone
                 if (PlayerCards[playerID][cardID].Color == Table.TopCard.Color ||
                     PlayerCards[playerID][cardID].Number == Table.TopCard.Number)
                 {
-                    //Played card becomes top card
-                    Table.TopCard = PlayerCards[playerID][cardID];
-                    PlayerCards[playerID].RemoveAt(cardID);
+                    //Move current player to bottom of the turn order
+                    //Skips this if reverse is played
+                    if(PlayerCards[playerID][cardID].Number != 11)
+                    {
+                        Players.Add(cPlayer);
+                        Players.Remove(cPlayer);
+                    }
+
+                    //Card effects
+                    switch(PlayerCards[playerID][cardID].Number)
+                    {
+                        default:
+                            break;
+
+                        case 10: //----- Pick Up 2 -----//
+                            Debug.Log(cPlayer.Name + " Played Pick Up 2");
+
+                            if (PlayerCards.Count > 1)
+                            {
+                                Players[0].CardCount += 2;
+                                PlayerCards[Players[0].ConnectionId].Add(DrawCard());
+                                PlayerCards[Players[0].ConnectionId].Add(DrawCard());
+                            }
+                            break;
+
+                        case 11://----- Reverse -----//
+                            Debug.Log(cPlayer.Name + " Played Reverse");
+                            Players.Reverse();
+                            break;
+
+                        case 12://----- Skip -----//
+                            Debug.Log(cPlayer.Name + " Played Skip");
+                            Players.Add(Players[0]);
+                            Players.Remove(Players[0]);
+                            break;
+                    }
 
                     //Update card count
                     cPlayer.CardCount--;
 
-                    //Card effects
-
-                    //Move current player to bottom of the turn order
-                    Players.Add(cPlayer);
-                    Players.Remove(cPlayer);
+                    //Played card becomes top card
+                    Table.TopCard = PlayerCards[playerID][cardID];
+                    PlayerCards[playerID].RemoveAt(cardID);
 
                     return true;
                 }

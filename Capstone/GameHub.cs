@@ -13,7 +13,8 @@ namespace Capstone
         readonly ChatManager CM = ChatManager.Instance;
 
         public static ConcurrentDictionary<string, User> Users = new ConcurrentDictionary<string, User>();
-        
+
+        static int anonCount = 0;
 
         public override Task OnConnectedAsync()
         {
@@ -23,7 +24,6 @@ namespace Capstone
 
         public override Task OnDisconnectedAsync(Exception exception)
         {
-            //Context.ConnectionId
             GM.RemovePlayer(Context.ConnectionId);
             UpdatePlayerList();
             return base.OnDisconnectedAsync(exception);
@@ -48,7 +48,22 @@ namespace Capstone
 
         public async void UpdatePlayerList()
         {
+            if(GM.Players.Count > 0)
+                TableStatus(GM.Players[0].Name + "'s Turn");
+
             await Clients.All.SendAsync("UpdatePlayerList", GM.Players);
+        }
+
+        //------------- Status Text Methods --------------
+
+        public async void TableStatus(string text)
+        {
+            await Clients.All.SendAsync("TableStatus", text);
+        }
+
+        public async void HandStatus(string text)
+        {
+            await Clients.Caller.SendAsync("HandStatus", text);
         }
 
         //---------------- Call Methods ------------------
@@ -57,10 +72,20 @@ namespace Capstone
         {
             int playerID = Users.Count + 1;
 
+            string userName;
+
+            if (name != "")
+                userName = name;
+            else
+            {
+                userName = anonCount == 0 ? "Anonymous" : "Anonymous(" + anonCount + ")";
+                anonCount++;
+            }
+
             Users.TryAdd(Context.ConnectionId, new User()
             {
                 ConnectionId = Context.ConnectionId,
-                Username = name != "" ? name : "Anonymous",
+                Username = userName,
                 PlayerId = playerID
             });
 
@@ -71,6 +96,8 @@ namespace Capstone
         public void DrawCard()
         {
             GM.DrawCard(Context.ConnectionId);
+
+            //TableStatus(Users[Context.ConnectionId].Username + " Drew a Card");
 
             UpdatePlayerList();
             UpdateHand();
