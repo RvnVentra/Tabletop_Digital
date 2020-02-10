@@ -55,17 +55,17 @@ namespace Capstone
 
         public async void EnterName(string name)
         {
-            int gameID = Users.Count + 1;
+            int playerID = Users.Count + 1;
 
             Users.TryAdd(Context.ConnectionId, new User()
             {
                 ConnectionId = Context.ConnectionId,
                 Username = name != "" ? name : "Anonymous",
-                GameID = gameID
+                PlayerId = playerID
             });
 
-            GM.AddPlayer(Context.ConnectionId, name != "" ? name : "Anonymous");
-            await Clients.Caller.SendAsync("JoinGame", gameID);
+            GM.AddPlayer(playerID, Context.ConnectionId, name != "" ? name : "Anonymous");
+            await Clients.Caller.SendAsync("JoinGame", playerID);
         }
 
         public void DrawCard()
@@ -97,7 +97,7 @@ namespace Capstone
     public class User
     {
         public string ConnectionId { get; set; }
-        public int GameID { get; set; }
+        public int PlayerId { get; set; }
         public string Username { get; set; }
     }
 }

@@ -33,20 +33,21 @@ namespace Capstone
             Table.TopCard = DrawCard();
         }
 
-        public void AddPlayer(string id, string name)
+        public void AddPlayer(int playerId, string connectionId, string name)
         {
-            PlayerCards[id] = new List<Card>();
+            PlayerCards[connectionId] = new List<Card>();
 
             for (int i = 0; i < 7; i++)
             {
-                PlayerCards[id].Add(DrawCard());
+                PlayerCards[connectionId].Add(DrawCard());
             }
 
             Players.Add(new Player
             {
-                ConnectionId = id,
+                PlayerId = playerId,
+                ConnectionId = connectionId,
                 Name = name,
-                CardCount = PlayerCards[id].Count
+                CardCount = PlayerCards[connectionId].Count
             });
         }
 
@@ -134,6 +135,7 @@ namespace Capstone
 
     public class Player
     {
+        public int PlayerId { get; set; }
         public string ConnectionId { get; set; }
         public string Name { get; set; }
         public int CardCount { get; set; }

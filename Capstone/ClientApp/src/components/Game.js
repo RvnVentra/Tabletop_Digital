@@ -31,7 +31,7 @@ export class Game extends Component
         this.state =
         {
             connection: null,
-            gameID: null,
+            playerID: null,
             loading: true
         };
     }
@@ -47,10 +47,9 @@ export class Game extends Component
 
                 this.setState({ loading: false });
 
-                this.state.connection.on('JoinGame', (gameID) =>
+                this.state.connection.on('JoinGame', (playerID) =>
                 {
-                    console.log(gameID);
-                    this.setState({ gameID });
+                    this.setState({ playerID });
                 });
 
             })
@@ -80,7 +79,7 @@ export class Game extends Component
         if (this.state.loading)
             return (<div><h1> LOADING </h1></div>);
 
-        if (this.state.gameID == null)
+        if (this.state.playerID == null)
             return (
                 <div>
                     <NameEntry connection={this.state.connection} />
@@ -95,7 +94,7 @@ export class Game extends Component
                 </div>
 
                 <div className="right">
-                    <PlayerList connection={this.state.connection} />
+                    <PlayerList connection={this.state.connection} playerID={this.state.playerID} />
                     <ChatBox connection={this.state.connection} />
                 </div>
             </div>

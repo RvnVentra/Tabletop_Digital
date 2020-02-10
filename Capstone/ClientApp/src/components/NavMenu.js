@@ -48,18 +48,13 @@ export class NavMenu extends Component
     }
 }
 
-
-                //<NavbarBrand tag={Link} to="/">Home</NavbarBrand>
-
-
-
-//<NavItem>
-//    <NavLink tag={Link} className="text-dark" to="/debug" target="blank">Debug</NavLink>
-//</NavItem>
-                //<NavItem>
-                //    <NavLink tag={Link} className="text-dark" to="/table">Table</NavLink>
-                //</NavItem>
-
-                //<NavItem>
-                //    <NavLink tag={Link} className="text-dark" to="/hand">Hand</NavLink>
-                //</NavItem>
+    //<NavbarBrand tag={Link} to="/">Home</NavbarBrand>
+    //<NavItem>
+    //    <NavLink tag={Link} className="text-dark" to="/debug" target="blank">Debug</NavLink>
+    //</NavItem>
+    //<NavItem>
+    //    <NavLink tag={Link} className="text-dark" to="/table">Table</NavLink>
+    //</NavItem>
+    //<NavItem>
+    //    <NavLink tag={Link} className="text-dark" to="/hand">Hand</NavLink>
+    //</NavItem>

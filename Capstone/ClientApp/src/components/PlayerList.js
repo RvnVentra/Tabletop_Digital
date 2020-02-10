@@ -1,5 +1,7 @@
 ﻿import React, { Component } from 'react';
 
+var playerID;
+
 export class PlayerList extends Component
 {
     constructor(props)
@@ -10,6 +12,8 @@ export class PlayerList extends Component
             players: [],
             connection: this.props.connection
         };
+
+        playerID = this.props.playerID;
     }
 
     componentDidMount()
@@ -27,11 +31,19 @@ export class PlayerList extends Component
     {
         let players = [];
 
+        //console.log(playerID);
+        console.log(this.state.players);
+
         for (var i = 0; i < this.state.players.length; i++)
         {
+            let name = this.state.players[i].name;
+
+            if (this.state.players[i].playerId == playerID)
+                name += " (YOU)";
+
             players.push(
                 <tr key={i}>
-                    <td>{this.state.players[i].name}</td>
+                    <td>{name}</td>
                     <td>{this.state.players[i].cardCount}</td>
                 </tr>);
         }
