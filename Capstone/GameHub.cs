@@ -4,6 +4,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
+using System.IO;
 
 namespace Capstone
 {
@@ -11,10 +12,9 @@ namespace Capstone
     {
         readonly GameManager GM = GameManager.Instance;
         readonly ChatManager CM = ChatManager.Instance;
+        readonly string[] COLORS = new string[] { "Blue", "Red", "Yellow", "Green" };
 
         public static ConcurrentDictionary<string, User> Users = new ConcurrentDictionary<string, User>();
-
-        static int anonCount = 0;
 
         public override Task OnConnectedAsync()
         {
@@ -41,6 +41,11 @@ namespace Capstone
             await Clients.Caller.SendAsync("UpdateHand", GM.PlayerCards[Context.ConnectionId]);
         }
 
+        public async void UpdateOtherHand(string connectionId)
+        {
+            await Clients.Client(connectionId).SendAsync("UpdateHand", GM.PlayerCards[connectionId]);
+        }
+
         public async void UpdateChat()
         {
             await Clients.All.SendAsync("UpdateChat", CM.ChatBox);
@@ -61,6 +66,11 @@ namespace Capstone
             await Clients.All.SendAsync("TableStatus", text);
         }
 
+        public async void TableSubStatus(string text)
+        {
+            await Clients.All.SendAsync("TableSubStatus", text);
+        }
+
         public async void HandStatus(string text)
         {
             await Clients.Caller.SendAsync("HandStatus", text);
@@ -72,45 +82,66 @@ namespace Capstone
         {
             int playerID = Users.Count + 1;
 
-            string userName;
+            name = name.Trim();
 
-            if (name != "")
-                userName = name;
-            else
+            if(name == "")
             {
-                userName = anonCount == 0 ? "Anonymous" : "Anonymous(" + anonCount + ")";
-                anonCount++;
+                try
+                {
+                    Random rand = new Random();
+                    string[] nameArray = File.ReadAllLines("RandomNames.txt");
+                    name = nameArray[rand.Next(nameArray.Length)];
+                }
+                catch
+                {
+                    name = "Anonymous";
+                }
             }
-
+                
             Users.TryAdd(Context.ConnectionId, new User()
             {
                 ConnectionId = Context.ConnectionId,
-                Username = userName,
+                Username = name,
                 PlayerId = playerID
             });
 
-            GM.AddPlayer(playerID, Context.ConnectionId, name != "" ? name : "Anonymous");
+            GM.AddPlayer(playerID, Context.ConnectionId, name);
             await Clients.Caller.SendAsync("JoinGame", playerID);
         }
 
         public void DrawCard()
         {
-            GM.DrawCard(Context.ConnectionId);
-
-            //TableStatus(Users[Context.ConnectionId].Username + " Drew a Card");
-
-            UpdatePlayerList();
-            UpdateHand();
+            if (GM.DrawCard(Context.ConnectionId))
+            {
+                TableSubStatus(Users[Context.ConnectionId].Username + " Drew a Card");
+                UpdatePlayerList();
+                UpdateHand();
+            }
         }
 
         public void PlayCard(int cardID)
         {
-            GM.PlayCard(Context.ConnectionId, cardID);
-            Debug.Log(cardID + " Was Played");
+            Card pCard = GM.PlayerCards[Context.ConnectionId][cardID];
 
-            UpdatePlayerList();
-            UpdateTable();
-            UpdateHand();
+            if (GM.PlayCard(Context.ConnectionId, cardID))
+            {
+                switch (pCard.Number)
+                {
+                    default:
+                        TableSubStatus(
+                            Users[Context.ConnectionId].Username + " Played " 
+                            + COLORS[pCard.Color] + " " + pCard.Number);
+                        break;
+
+                    case 10: //----- Pick Up 2 -----//
+                        UpdateOtherHand(GM.Players.First().ConnectionId);
+                        break;
+                }
+
+                UpdatePlayerList();
+                UpdateTable();
+                UpdateHand();
+            }
         }
 
         public void Chat(string input)

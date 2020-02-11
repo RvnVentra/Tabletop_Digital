@@ -86,8 +86,13 @@ namespace Capstone
         {
             if (CheckTurn(id))
             {
-                Players.Single(p => p.ConnectionId == id).CardCount++;
+                Player cPlayer = Players.Single(p => p.ConnectionId == id);
+
+                cPlayer.CardCount++;
                 PlayerCards[id].Add(DrawCard());
+
+                Players.Add(cPlayer);
+                Players.Remove(cPlayer);
                 return true;
             }
 

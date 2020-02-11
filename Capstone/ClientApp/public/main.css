@@ -132,14 +132,32 @@ h3
 	min-height: 5em;
 }
 
-	
+	#table-status p
+	{
+		text-indent: 2em;
+	}
+
+footer
+{
+	clear: both;
+	padding: 10em 0 15px 0;
+}
+
+	footer p
+	{
+		text-align: center;
+	}
 
 
 
-
-
-
-
+@media (max-width : 725px)
+{
+	.left, .right
+	{
+		width: 100%;
+		clear: both;
+	}
+}
 
 
 
