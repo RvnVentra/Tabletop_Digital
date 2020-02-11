@@ -12,7 +12,7 @@ namespace Capstone
     {
         readonly GameManager GM = GameManager.Instance;
         readonly ChatManager CM = ChatManager.Instance;
-        readonly string[] COLORS = new string[] { "Blue", "Red", "Yellow", "Green" };
+        readonly string[] COLORS = new string[] { "Blue", "Red", "Green", "Yellow" };
 
         public static ConcurrentDictionary<string, User> Users = new ConcurrentDictionary<string, User>();
 
