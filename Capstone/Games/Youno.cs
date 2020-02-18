@@ -5,10 +5,8 @@ using System.Threading.Tasks;
 
 namespace Capstone
 {
-    public class Uno : Game
+    public class Youno : Game
     {
-
-
 
     }
 }

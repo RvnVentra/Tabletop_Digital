@@ -1,6 +1,5 @@
 ﻿import React, { Component } from 'react';
 
-
 var cards;
 
 export class Hand extends Component

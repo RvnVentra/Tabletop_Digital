@@ -1,16 +1,4 @@
 import React, { Component } from 'react';
-//const signalR = require('@aspnet/signalr');
-
-//let connection = new signalR.HubConnectionBuilder().withUrl("/gameHub").build();
-
-//connection.on("Receive", data =>
-//{
-//    console.log(data);
-//});
-
-//connection.start()
-//    .then(() => connection.invoke("Send", "Hello"));
-
 
 export class Home extends Component
 {
@@ -20,8 +8,9 @@ export class Home extends Component
     {
         return(
             <div>
-            <h1>Hello, world!</h1>
-
+                <h1>Home</h1>
+                <a href="/createGame">Create Game</a>
+                <a href="/game">Join Game</a>
             </div>
         );
     }
