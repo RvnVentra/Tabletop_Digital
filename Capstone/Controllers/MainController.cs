@@ -22,5 +22,10 @@ namespace Capstone.Controllers
             return gameCode;
         }
 
+        [HttpGet("JoinGame")]
+        public bool JoinGame(string roomCode)
+        {
+            return GM.Games.ContainsKey(roomCode);
+        }
     }
 }

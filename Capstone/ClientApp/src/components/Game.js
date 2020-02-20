@@ -1,19 +1,8 @@
 ﻿import React, { Component } from 'react';
-
-import ReactDOM from "react-dom";
-import
-{
-    BrowserRouter as Router,
-    Switch,
-    Route,
-    useParams
-} from "react-router-dom";
-
 import { Table } from './Table'
 import { Hand } from './Hand';
 import { ChatBox } from './ChatBox';
 import { PlayerList } from './PlayerList';
-import { NameEntry } from './NameEntry';
 
 const signalR = require('@aspnet/signalr');
 
@@ -34,7 +23,7 @@ cards[3] = [];
 export class Game extends Component
 {
     static displayName = Table.name;
-
+       
     constructor(props)
     {
         super(props);
@@ -42,28 +31,25 @@ export class Game extends Component
         {
             connection: null,
             playerID: null,
+            playerName: this.props.playerName,
+            code: this.props.code,
             loading: true
         };
     }
 
     componentDidMount()
     {
-        let { gameCode } = useParams();
-        console.log("Code: " + gameCode);
-
         this.setState({ connection: new signalR.HubConnectionBuilder().withUrl("/gameHub").build() }, () =>
         {
             this.state.connection.start().then(() =>
             {
+                this.state.connection.invoke('JoinGame', this.state.code, this.state.playerName)
+                    .catch(err => console.error(err));
+
                 console.log('Connection started!');
                 this.loadAssets();
 
                 this.setState({ loading: false });
-
-                this.state.connection.on('JoinGame', (playerID) =>
-                {
-                    this.setState({ playerID });
-                });
 
             })
             .catch(err => console.log('Error while establishing connection :('));
@@ -98,12 +84,7 @@ export class Game extends Component
         if (this.state.loading)
             return (<div><h1> LOADING </h1></div>);
 
-        if (this.state.playerID == null)
-            return (
-                <div>
-                    <NameEntry connection={this.state.connection} />
-                </div>
-            );
+        console.log(this.state.code);
 
         return (
             <div>
@@ -113,6 +94,7 @@ export class Game extends Component
                 </div>
 
                 <div className="right">
+                    <h2>Room Code: {this.state.code}</h2>   
                     <PlayerList connection={this.state.connection} playerID={this.state.playerID} />
                     <ChatBox connection={this.state.connection} />
                 </div>

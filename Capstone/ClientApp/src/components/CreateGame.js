@@ -1,4 +1,5 @@
 ﻿import React, { Component } from 'react';
+import { Game } from './Game'
 
 export class CreateGame extends Component
 {
@@ -7,10 +8,19 @@ export class CreateGame extends Component
     constructor(props)
     {
         super(props);
-        this.state = { code: null };
+        this.state =
+        {
+            code: null,
+            playerName: ''
+        };
     }
 
     componentDidMount()
+    {
+
+    }
+
+    createGame()
     {
         fetch('Main/CreateGame')
             .then(response => response.text())
@@ -23,13 +33,23 @@ export class CreateGame extends Component
 
     render()
     {
+        if (this.state.code == null)
+            return (
+                <div>
+                    <h1>Create Game</h1>
 
-        return (
-            <div>
-                <h1>Create Game</h1>
-                <br />
-                {this.state.code}
-            </div>
-        );
+                    <div id="name-entry">
+                        <h3>Enter Name:</h3>
+                        <input type="text" value={this.state.playerName} onChange={e => this.setState({ input: e.target.value })} />
+                        <button onClick={(e) => this.createGame(e)}>Create Game</button>
+                    </div>
+                </div>
+            );
+        else
+            return (
+                <div>
+                    <Game code={this.state.code} playerName={this.state.playerName}/>
+                </div>
+            );
     }
 }

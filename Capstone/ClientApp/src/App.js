@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { BrowserRouter as Router, Switch, Route, Link, useParams } from 'react-router-dom';
+import { Route } from 'react-router';
 import { Layout } from './components/Layout';
 import { Home } from './components/Home'; 
-import { Game } from './components/Game';
+import { JoinGame } from './components/JoinGame';
 import { CreateGame } from './components/CreateGame';
 import { DebugLog } from './components/DebugLog';
 
@@ -15,7 +15,7 @@ export default class App extends Component
         return (
             <Layout>
                 <Route exact path='/' component={Home} />
-                <Route exact path='/game:GAME_CODE' component={Game} />
+                <Route exact path='/game' component={JoinGame} />
                 <Route exact path='/createGame' component={CreateGame} />
                 <Route path='/debug' component={DebugLog} />
             </Layout>

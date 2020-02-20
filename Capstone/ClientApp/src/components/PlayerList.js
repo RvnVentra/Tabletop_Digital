@@ -31,7 +31,7 @@ export class PlayerList extends Component
     {
         let players = [];
 
-        //console.log(playerID);
+        console.log(playerID);
         console.log(this.state.players);
 
         for (var i = 0; i < this.state.players.length; i++)
