@@ -7,12 +7,20 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Capstone.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class MainController : ControllerBase
     {
+        readonly GameManager GM = GameManager.Instance;
 
+        [HttpGet("CreateGame")]
+        public string CreateGame()
+        {
+            string gameCode = GM.CreateGame();
+            Debug.Log("Added Game:" + gameCode);
 
+            return gameCode;
+        }
 
     }
 }

@@ -35,6 +35,11 @@
     <None Remove="ClientApp\signalr\signalr.min.js" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="ClientApp\public\NewFolder1\" />
+    <Folder Include="ClientApp\public\NewFolder\" />
+  </ItemGroup>
+
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
     <!-- Ensure Node.js is installed -->
     <Exec Command="node --version" ContinueOnError="true">

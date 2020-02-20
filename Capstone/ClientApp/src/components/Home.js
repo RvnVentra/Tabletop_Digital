@@ -7,10 +7,10 @@ export class Home extends Component
     render()
     {
         return(
-            <div>
+            <div id="home">
                 <h1>Home</h1>
-                <a href="/createGame">Create Game</a>
-                <a href="/game">Join Game</a>
+                <a className="home-button" href="/createGame">Create Game</a>
+                <a className="home-button" href="/game">Join Game</a>
             </div>
         );
     }

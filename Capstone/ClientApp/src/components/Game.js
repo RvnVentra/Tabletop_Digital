@@ -1,4 +1,14 @@
 ﻿import React, { Component } from 'react';
+
+import ReactDOM from "react-dom";
+import
+{
+    BrowserRouter as Router,
+    Switch,
+    Route,
+    useParams
+} from "react-router-dom";
+
 import { Table } from './Table'
 import { Hand } from './Hand';
 import { ChatBox } from './ChatBox';
@@ -38,6 +48,9 @@ export class Game extends Component
 
     componentDidMount()
     {
+        let { gameCode } = useParams();
+        console.log("Code: " + gameCode);
+
         this.setState({ connection: new signalR.HubConnectionBuilder().withUrl("/gameHub").build() }, () =>
         {
             this.state.connection.start().then(() =>
