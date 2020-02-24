@@ -47,21 +47,20 @@ export class ChatBox extends Component
         }
 
         return (
-            <div id="chat-box">
+            <form id="chat-box" action="javascript:void(0)">
                 <br />
-                <input id= "chatInput"
+                <input id="chatInput"
                     type="text"
                     value={this.state.input}
                     onChange={e => this.setState({ input: e.target.value })}
                 />
-                <br/><br/>
-                <button onClick={this.sendMessage}>Send</button>
-
-                <br/><br/>
-                <div>
+                <br /><br />
+                <button type="submit" onClick={this.sendMessage}>Send</button>
+                <br /><br />
+                <div className="chatBox">
                     {chatlog}
                 </div>
-            </div>
+            </form>
         );
     }
 }

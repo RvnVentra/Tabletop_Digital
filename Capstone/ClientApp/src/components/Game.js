@@ -8,10 +8,10 @@ const signalR = require('@aspnet/signalr');
 
 const COLORS =
 {
-    0: "#000099", // blue
-    1: "#990000", // red
-    2: "#006600", // green
-    3: "#cc9900" // yellow
+    0: "blue", // blue
+    1: "red", // red
+    2: "green", // green
+    3: "yellow" // yellow
 };
 
 var cards = new Array(4);
@@ -72,8 +72,8 @@ export class Game extends Component
             for (let n = 10; n < 13; n++)
             {
                 cards[i][n] =
-                    <div className="card" style={{ backgroundColor: COLORS[i] }}>                    
-                       <span className="card-icon">{n - 10}</span>   
+                    <div className="card" id="spCard">
+                        <span className="card-icon">{n - 10}</span>
                     </div>;
             }
         }
