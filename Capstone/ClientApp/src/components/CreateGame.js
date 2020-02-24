@@ -40,7 +40,8 @@ export class CreateGame extends Component
 
                     <div id="name-entry">
                         <h3>Enter Name:</h3>
-                        <input type="text" value={this.state.playerName} onChange={e => this.setState({ input: e.target.value })} />
+                        <input type="text" value={this.state.playerName}
+                            onChange={e => this.setState({ playerName: e.target.value })} />
                         <button onClick={(e) => this.createGame(e)}>Create Game</button>
                     </div>
                 </div>
