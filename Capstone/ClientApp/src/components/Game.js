@@ -23,7 +23,7 @@ cards[3] = [];
 export class Game extends Component
 {
     static displayName = Table.name;
-       
+
     constructor(props)
     {
         super(props);
@@ -52,7 +52,7 @@ export class Game extends Component
                 this.setState({ loading: false });
 
             })
-            .catch(err => console.log('Error while establishing connection :('));
+                .catch(err => console.log('Error while establishing connection :('));
         });
     }
 
@@ -64,7 +64,7 @@ export class Game extends Component
             for (let n = 0; n < 13; n++)
             {
                 cards[i][n] =
-                    <div className="card" style={{ backgroundColor: COLORS[i] }}>
+                    <div className="card" id={COLORS[i]}>
                         <span className="card-number">{n}</span>
                     </div>;
             }
@@ -72,7 +72,7 @@ export class Game extends Component
             for (let n = 10; n < 13; n++)
             {
                 cards[i][n] =
-                    <div className="card" id="spCard">
+                    <div className="card" id={COLORS[i]}>
                         <span className="card-icon">{n - 10}</span>
                     </div>;
             }
@@ -90,11 +90,11 @@ export class Game extends Component
             <div>
                 <div className="left">
                     <Table connection={this.state.connection} cards={cards} />
-                    <Hand connection={this.state.connection} cards={cards}/>
+                    <Hand connection={this.state.connection} cards={cards} />
                 </div>
 
                 <div className="right">
-                    <h2>Room Code: {this.state.code}</h2>   
+                    <h2>Room Code: {this.state.code}</h2>
                     <PlayerList connection={this.state.connection} playerID={this.state.playerID} />
                     <ChatBox connection={this.state.connection} />
                 </div>
