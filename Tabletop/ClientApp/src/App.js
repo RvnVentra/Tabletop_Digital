@@ -5,6 +5,7 @@ import { Home } from './components/Home';
 import { JoinGame } from './components/JoinGame';
 import { CreateGame } from './components/CreateGame';
 import { DebugLog } from './components/DebugLog';
+import { CreateAccount } from './components/CreateAccount';
 
 export default class App extends Component
 {
@@ -18,6 +19,7 @@ export default class App extends Component
                 <Route exact path='/game' component={JoinGame} />
                 <Route exact path='/createGame' component={CreateGame} />
                 <Route path='/debug' component={DebugLog} />
+                <Route exact path='/createAccount' component={CreateAccount} />
             </Layout>
         );
     }

@@ -6,6 +6,8 @@ export class Home extends Component
 
     render()
     {
+        fetch('Main/AddAccount');
+
         return(
             <div id="home">
                 <h1>Home</h1>

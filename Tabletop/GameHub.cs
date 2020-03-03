@@ -5,6 +5,10 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
 using System.IO;
+using System.Diagnostics;
+using Microsoft.AspNetCore.Http;
+using System.Net;
+using System.Net.Http;
 
 namespace Tabletop
 {
@@ -21,15 +25,22 @@ namespace Tabletop
             return Users[Context.ConnectionId].GameCode;
         }
 
+        public string UserId()
+        {
+            return Users[Context.ConnectionId].ClientId;
+        }
+
+
+        //------------ Connection Overrides --------------
+
         public override Task OnConnectedAsync()
         {
-            Debug.Log("User Connected: " + Context.ConnectionId);
             return base.OnConnectedAsync();
         }
 
         public override Task OnDisconnectedAsync(Exception exception)
         {
-            GM.Games[GameCode()].RemovePlayer(Context.ConnectionId);
+            //GM.Games[GameCode()].RemovePlayer(Context.ConnectionId);
             UpdatePlayerList();
             return base.OnDisconnectedAsync(exception);
         }
@@ -44,7 +55,7 @@ namespace Tabletop
 
         public async void UpdateHand()
         {
-            await Clients.Caller.SendAsync("UpdateHand", GM.Games[GameCode()].PlayerCards[Context.ConnectionId]);
+            await Clients.Caller.SendAsync("UpdateHand", GM.Games[GameCode()].PlayerCards[UserId()]);
         }
 
         public async void UpdateOtherHand(string connectionId)
@@ -84,7 +95,7 @@ namespace Tabletop
 
         //---------------- Call Methods ------------------
 
-        public async void JoinGame(string code, string name)
+        public async void JoinGame(string code, string name, string clientId)
         {
             int playerID = Users.Count + 1;
 
@@ -102,23 +113,32 @@ namespace Tabletop
                     name = "Anonymous";
                 }
             }
-                
-            Users.TryAdd(Context.ConnectionId, new User()
+
+            if (Users.Any(x => x.Value.ClientId == clientId))
             {
-                ConnectionId = Context.ConnectionId,
-                Username = name,
-                GameCode = code,
-                PlayerId = playerID
-            });
+                Users.TryAdd(Context.ConnectionId, Users.Where(x => x.Value.ClientId == clientId).FirstOrDefault().Value);
+            }
+            else
+            {
+                Users.TryAdd(Context.ConnectionId, new User()
+                {
+                    ConnectionId = Context.ConnectionId,
+                    Username = name,
+                    GameCode = code,
+                    PlayerId = playerID,
+                    ClientId = clientId
+                });
 
-            GM.Games[GameCode()].AddPlayer(playerID, Context.ConnectionId, name);
+                GM.Games[GameCode()].AddPlayer(playerID, UserId(), name);
+            }
 
+            //Chat(clientId);
             await Groups.AddToGroupAsync(Context.ConnectionId, code);
         }
 
         public void DrawCard()
         {
-            if (GM.Games[GameCode()].DrawCard(Context.ConnectionId))
+            if (GM.Games[GameCode()].DrawCard(UserId()))
             {
                 TableSubStatus(Users[Context.ConnectionId].Username + " Drew a Card");
                 UpdatePlayerList();
@@ -128,9 +148,9 @@ namespace Tabletop
 
         public void PlayCard(int cardID)
         {
-            Card pCard = GM.Games[GameCode()].PlayerCards[Context.ConnectionId][cardID];
+            Card pCard = GM.Games[GameCode()].PlayerCards[UserId()][cardID];
 
-            if (GM.Games[GameCode()].PlayCard(Context.ConnectionId, cardID))
+            if (GM.Games[GameCode()].PlayCard(UserId(), cardID))
             {
                 switch (pCard.Number)
                 {
@@ -153,7 +173,6 @@ namespace Tabletop
 
         public void Chat(string input)
         {
-            //CM.NewMessage(Users[Context.ConnectionId].Username, input);
             CM.NewMessage(Users[Context.ConnectionId].Username, input);
             UpdateChat();
         }
@@ -163,6 +182,7 @@ namespace Tabletop
     {
         public string ConnectionId { get; set; }
         public int PlayerId { get; set; }
+        public string ClientId { get; set; }
         public string GameCode { get; set; }
         public string Username { get; set; }
     }

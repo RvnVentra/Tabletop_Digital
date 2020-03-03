@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Tabletop.Models;
 
 namespace Tabletop
 {
@@ -12,11 +13,6 @@ namespace Tabletop
         public Dictionary<string, Game> Games = new Dictionary<string, Game>();
 
         const string CODE_CHARS =  "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-
-        private GameManager()
-        {
-            Games.Add("GAME_CODE", new Game());
-        }
 
         public string CreateGame()
         {

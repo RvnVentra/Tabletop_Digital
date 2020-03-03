@@ -30,6 +30,7 @@ export class Game extends Component
         this.state =
         {
             connection: null,
+            clientID: null,
             playerID: null,
             playerName: this.props.playerName,
             code: this.props.code,
@@ -39,21 +40,28 @@ export class Game extends Component
 
     componentDidMount()
     {
-        this.setState({ connection: new signalR.HubConnectionBuilder().withUrl("/gameHub").build() }, () =>
-        {
-            this.state.connection.start().then(() =>
+        fetch('Main/ClientId')
+            .then(response => response.text())
+            .then(clientID =>
             {
-                this.state.connection.invoke('JoinGame', this.state.code, this.state.playerName)
-                    .catch(err => console.error(err));
+                this.setState({ clientID });
 
-                console.log('Connection started!');
-                this.loadAssets();
+                this.setState({ connection: new signalR.HubConnectionBuilder().withUrl("/gameHub").build() }, () =>
+                {
+                    this.state.connection.start().then(() =>
+                    {
+                        this.state.connection.invoke('JoinGame', this.state.code, this.state.playerName, clientID)
+                            .catch(err => console.error(err));
 
-                this.setState({ loading: false });
+                        console.log('Connection started!');
+                        this.loadAssets();
 
-            })
-                .catch(err => console.log('Error while establishing connection :('));
-        });
+                        this.setState({ loading: false });
+
+                    })
+                        .catch(err => console.log('Error while establishing connection :('));
+                });
+            });
     }
 
     loadAssets()

@@ -6,6 +6,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Tabletop.Models;
+using Tabletop.Controllers;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 
 namespace Tabletop
 {
@@ -23,9 +26,15 @@ namespace Tabletop
         {
             services.AddSignalR();
             services.AddControllersWithViews();
+            services.AddDistributedMemoryCache();
+            services.AddSession();
 
+            //services.AddScoped<DBManager>();
             services.AddDbContext<TabletopContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("TabletopConnection")));
+
+            services.AddSingleton<IUserIdProvider, NameUserIdProvider>();
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
@@ -52,6 +61,8 @@ namespace Tabletop
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
             app.UseRouting();
+            app.UseSession();
+            app.UseCookiePolicy();
 
             app.UseEndpoints(endpoints =>
             {
@@ -71,6 +82,14 @@ namespace Tabletop
                     spa.UseReactDevelopmentServer(npmScript: "start");
                 }
             });
+        }
+    }
+
+    public class NameUserIdProvider : IUserIdProvider
+    {
+        public virtual string GetUserId(HubConnectionContext connection)
+        {
+            return connection.User?.Identity?.Name;
         }
     }
 }
