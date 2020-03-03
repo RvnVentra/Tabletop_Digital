@@ -15,7 +15,6 @@ namespace Tabletop
     public class GameHub : Hub
     {
         readonly GameManager GM = GameManager.Instance;
-        readonly ChatManager CM = ChatManager.Instance;
         readonly string[] COLORS = new string[] { "Blue", "Red", "Green", "Yellow" };
 
         public static ConcurrentDictionary<string, User> Users = new ConcurrentDictionary<string, User>();
@@ -65,7 +64,7 @@ namespace Tabletop
 
         public async void UpdateChat()
         {
-            await Clients.All.SendAsync("UpdateChat", CM.ChatBox);
+            await Clients.Group(GameCode()).SendAsync("UpdateChat", GM.ChatLogs[GameCode()]);
         }
 
         public async void UpdatePlayerList()
@@ -173,7 +172,7 @@ namespace Tabletop
 
         public void Chat(string input)
         {
-            CM.NewMessage(Users[Context.ConnectionId].Username, input);
+            GM.NewMessage(Users[Context.ConnectionId].Username, input, GameCode());
             UpdateChat();
         }
     }
