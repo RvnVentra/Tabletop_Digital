@@ -54,13 +54,13 @@ namespace Tabletop
 
         public async void UpdateHand()
         {
-            await Clients.Caller.SendAsync("UpdateHand", GM.Games[GameCode()].PlayerCards[UserId()]);
+            await Clients.Group(GameCode()).SendAsync("UpdateHand", GM.Games[GameCode()].PlayerCards[UserId()]);
         }
 
-        public async void UpdateOtherHand(string connectionId)
-        {
-            await Clients.Client(connectionId).SendAsync("UpdateHand", GM.Games[GameCode()].PlayerCards[connectionId]);
-        }
+        //public async void UpdateOtherHand(string connectionId)
+        //{
+        //    await Clients.Client(connectionId).SendAsync("UpdateHand", GM.Games[GameCode()].PlayerCards[connectionId]);
+        //}
 
         public async void UpdateChat()
         {
@@ -159,9 +159,9 @@ namespace Tabletop
                             + COLORS[pCard.Color] + " " + pCard.Number);
                         break;
 
-                    case 10: //----- Pick Up 2 -----//
-                        UpdateOtherHand(GM.Games[GameCode()].Players.First().ConnectionId);
-                        break;
+                    //case 10: //----- Pick Up 2 -----//
+                        //UpdateOtherHand(GM.Games[GameCode()].Players.First().ConnectionId);
+                        //break;
                 }
 
                 UpdatePlayerList();

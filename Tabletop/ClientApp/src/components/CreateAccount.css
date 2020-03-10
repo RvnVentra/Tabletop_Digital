@@ -1,0 +1,68 @@
+﻿html {
+	font-size: 14px;
+}
+
+@media (min-width: 768px) {
+	html {
+		font-size: 16px;
+	}
+}
+
+.accTitle {
+	text-align: center;
+	margin-top: 1.5%;
+	text-decoration: underline;
+}
+
+.accBody 
+{
+	border: solid;
+	border-width: 1px;
+	border-radius: 15px;
+	margin-top: 10%;
+}
+
+.formBody {
+	border: dotted;
+	border-width: 1px;
+	margin: 5% 10%;
+	padding-bottom: 4.5%;
+}
+
+.accLabel 
+{
+	margin: 5% 5% 0% 10%;
+}
+
+.accInputU
+{
+	margin-left: 15px;
+}
+.accInputP {
+	margin-left: 19px;
+}
+.accInputE {
+	margin-left: 47px;
+}
+.accInputD {
+	margin-left: -14px;
+}
+
+.accSubmit {
+	position: absolute;
+	left: 35%;
+	width: 100px;
+}
+
+.accReset {
+	position: absolute;
+	right: 35%;
+	width: 100px;
+}
+
+.errMessage {
+	margin-top: 1.5%;
+	color: red;
+	font-style: italic;
+	text-align:center;
+}

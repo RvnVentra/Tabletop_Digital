@@ -21,3 +21,42 @@ html
 {
   box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
 }
+
+.nav_item
+{
+    border-left: solid;
+    border-color: lightgray;
+    border-width: 1px;
+    /*padding: 0px 15px;*/
+    text-align: center;
+    width: 150px;
+    /*margin: 0px 5px;*/
+
+}
+
+#nav_item_last 
+{
+    border-right: solid;
+    border-color: lightgray;
+    border-width: 1px;
+}
+
+#nav_link_underline {
+    width: 125px;
+    height: 5px;
+    margin: -10px auto 0px auto;
+    background-color: rgba(128, 128, 128, 0.25);
+    display: none;
+}
+
+.nav_link:hover
+{
+    font-weight: bold;
+    font-style: italic;
+    /*background-color: rgba(128, 128, 128, 0.25);*/
+    /*border-radius: 30px;*/
+}
+
+    .nav_link:hover + #nav_link_underline {
+        display: block;
+    }

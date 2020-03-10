@@ -24,7 +24,6 @@ namespace Tabletop.Controllers
         [HttpGet("AddAccount")]
         public void AddAccount()
         {
-
             //foreach (string n in NameList.NameArray)
             //{
             //    _context.Account.Add(new Account
@@ -69,7 +68,6 @@ namespace Tabletop.Controllers
             {
                 id = Request.Cookies["ClientId"];
             }
-
 
             Debug.Log(id);
             return id;

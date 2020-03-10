@@ -40,16 +40,19 @@ export class NavMenu extends Component
             
 
             <ul className="navbar-nav flex-grow">
-                <NavItem>
-                    <NavLink tag={Link} className="text-dark" to="/debug" target="blank">Debug</NavLink>
+                <NavItem className="nav_item">
+                    <NavLink tag={Link} className="text-dark nav_link" to="/debug" target="blank">Debug</NavLink>
+                    <div id="nav_link_underline"></div>
                 </NavItem>
-                <NavItem>
-                    <NavLink tag={Link} className="text-dark" to="/createAccount" target="blank">Create Account</NavLink>
+                <NavItem className="nav_item" id="nav_item_last">
+                    <NavLink tag={Link} className="text-dark nav_link" to="/CreateAccount" target="blank">Create Account</NavLink>
+                    <div id="nav_link_underline"></div>
                 </NavItem>
             </ul>
 
             </Collapse>
             </Container>
+
             </Navbar>
             </header>
         );
