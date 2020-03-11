@@ -101,8 +101,29 @@ export class CreateAccount extends Component
 			}
 		}
 
-
+		this.createAccount();
 	}
+
+	createAccount()
+	{
+		//console.log("TEST");
+		//fetch('Main/AddAccount');
+
+		fetch('Main/AddAccount',
+			{
+				method: 'POST',
+				headers:
+				{
+					'Accept': 'application/json',
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(
+				{
+					username: 'username'
+				})
+			});
+	}
+
 
 	render() 
 	{
@@ -137,7 +158,7 @@ export class CreateAccount extends Component
 					<input className="accReset" type="Reset" value="Reset" />
 
 				</form>
-			</div>)
+			</div>);
 	}
 }
 

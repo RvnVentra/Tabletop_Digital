@@ -57,6 +57,7 @@ namespace Tabletop
                 app.UseHsts();
             }
 
+            app.UseDefaultFiles();
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseSpaStaticFiles();

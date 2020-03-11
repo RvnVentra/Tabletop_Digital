@@ -22,8 +22,13 @@ namespace Tabletop.Controllers
         }
 
         [HttpGet("AddAccount")]
-        public void AddAccount()
+        public void AddAccount(string username)
         {
+            if(username != null)
+                Debug.Log(username);
+            else
+                Debug.Log("NOPE");
+
             //foreach (string n in NameList.NameArray)
             //{
             //    _context.Account.Add(new Account

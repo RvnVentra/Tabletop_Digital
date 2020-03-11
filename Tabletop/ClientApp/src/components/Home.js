@@ -4,9 +4,23 @@ export class Home extends Component
 {
     static displayName = Home.name;
 
+	postTest()
+	{
+        var req = new XMLHttpRequest();
+
+        req.addEventListener('load', () =>
+        {
+            console.log(req.responseText)
+     
+        });
+
+        req.open('Post', 'Main/AddAccount');
+        req.send(JSON.stringify({ username: 'data' }));
+	}
+
     render()
-    {
-        fetch('Main/AddAccount');
+	{
+        this.postTest();
 
         return(
             <div id="home">
