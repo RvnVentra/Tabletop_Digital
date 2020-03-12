@@ -95,10 +95,6 @@ export class CreateAccount extends Component
 				this.setState({ errorMessage: 'Email must be properly formatted.' });
 			}
 
-			if (!rDisplayName.test(this.state.displayname)) 
-			{
-				this.setState({ errorMessage: 'Display name cannot contain special letters.' });
-			}
 		}
 
 		this.createAccount();
@@ -106,22 +102,13 @@ export class CreateAccount extends Component
 
 	createAccount()
 	{
-		//console.log("TEST");
-		//fetch('Main/AddAccount');
+		console.log(this.state.username);
+		console.log(this.state.email);
+		console.log(this.state.password);
 
-		fetch('Main/AddAccount',
-			{
-				method: 'POST',
-				headers:
-				{
-					'Accept': 'application/json',
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify(
-				{
-					username: 'username'
-				})
-			});
+		fetch("main/AddAccount?username=" + this.state.username
+			+ "&password=" + this.state.password
+			+ "&email=" + this.state.email);
 	}
 
 
@@ -146,11 +133,6 @@ export class CreateAccount extends Component
 					<label className="accLabel">Email: </label>
 					<input type="text" className="accInputE" placeholder="example@example.ca"
 						id="email" onChange={(e) => this.setValue(e)} />
-					<br />
-
-					<label className="accLabel">Display Name: </label>
-					<input type="text" className="accInputD" placeholder="Enter a Display Name"
-						id="displayname" onChange={(e) => this.setValue(e)} />
 					<br />
 
 					<p className="errMessage">{this.state.errorMessage}</p>

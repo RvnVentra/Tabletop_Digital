@@ -14,12 +14,43 @@ export class DebugLog extends Component
 
     componentDidMount()
     {
+        this.update();
+    }
+
+    postTest()
+    {
+        var PL = {
+            a: 1,
+            b: 2
+        };
+
+        var data = new FormData();
+        data.append("PoLos", JSON.stringify(PL));
+
+        console.log(data);
+
+        fetch('main/test',
+            {
+                method: "POST",
+                body: "TEST_BODY"
+            }).
+            then(response => response.text())
+            .then(data =>
+            {
+                console.log(data);
+            });
+    }
+
+    update()
+    {
+        //this.postTest();
+
+        //fetch('main/AddAccount?username=Alex');
+
         fetch('debug/GetLog')
             .then(response => response.json())
             .then(log =>
             {
-                console.log(log);
-
                 this.setState(
                     {
                         log: log,
@@ -46,6 +77,10 @@ export class DebugLog extends Component
             }
         }
 
-        return (<div id="debug-log">{log}</div>);
+        return (
+            <div id="debug-log">
+                <button id="draw-card" onClick={(e) => this.update(e)}>Update</button>
+                {log}
+            </div>);
     }
 }

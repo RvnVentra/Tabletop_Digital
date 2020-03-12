@@ -19,26 +19,26 @@ namespace Tabletop.Controllers
         }
 
         [HttpGet("AddAccount")]
-        public void AddAccount(string username)
+        public IActionResult AddAccount(string username, string password, string email)
         {
-            if (username != null)
-                Debug.Log(username);
-            else
-                Debug.Log("NOPE");
+            string output = "";
 
-            //foreach (string n in NameList.NameArray)
-            //{
-            //    _context.Account.Add(new Account
-            //    {
-            //        UserName = n,
-            //        Password = "password",
-            //        Email = n + "@mail.ca"
-            //    });
+            if (username == null || password == null || email == null)
+            {
+                output = "Missing Info";
+            }
 
-            //    Debug.Log("ADD ACCOUNT: " + n);
-            //}
+            _context.Account.Add(new Account
+            {
+                UserName = username,
+                Password = password,
+                Email = email
+            });
 
-            //_context.SaveChanges();
+            _context.SaveChanges();
+
+            Debug.Log("ADD ACCOUNT: " + username);
+            return Ok(output);  
         }
 
         [HttpPost("test")]
