@@ -4,24 +4,36 @@ export class Home extends Component
 {
     static displayName = Home.name;
 
-	postTest()
-	{
-        var req = new XMLHttpRequest();
+    constructor(props)
+    {
+        super(props);
+        this.state = { text: "", loading: true };
 
-        req.addEventListener('load', () =>
-        {
-            console.log(req.responseText)
-     
-        });
+        var PL = {
+            a: 1,
+            b: 2
+        };
 
-        req.open('Post', 'Main/AddAccount');
-        req.send(JSON.stringify({ username: 'data' }));
-	}
+        var data = new FormData();
+        data.append("PoLos", JSON.stringify(PL));
+
+        fetch('main/test',
+            {
+                method: "POST",
+                body: data
+            }).
+            then(response => response.text())
+            .then(data =>
+            {
+                console.log(data);
+
+                this.setState({ text: data, loading: false });
+            });
+
+    }
 
     render()
 	{
-        this.postTest();
-
         return(
             <div id="home">
                 <h1>Home</h1>

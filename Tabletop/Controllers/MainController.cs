@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using System;
 using Tabletop.Models;
 
 namespace Tabletop.Controllers
@@ -24,7 +21,7 @@ namespace Tabletop.Controllers
         [HttpGet("AddAccount")]
         public void AddAccount(string username)
         {
-            if(username != null)
+            if (username != null)
                 Debug.Log(username);
             else
                 Debug.Log("NOPE");
@@ -42,6 +39,28 @@ namespace Tabletop.Controllers
             //}
 
             //_context.SaveChanges();
+        }
+
+        [HttpPost("test")]
+        public IActionResult Test(string pl)
+        {
+            Debug.Log("TEST");
+            Debug.Log(pl);
+
+            if (pl == null)
+            {
+                return Ok();
+            }
+
+            PL plobj = JsonConvert.DeserializeObject<PL>(pl);
+
+            Debug.Log(pl);
+            Debug.Log(plobj.a);
+            Debug.Log(plobj.b);
+
+
+
+            return Ok($"Test Test a=={plobj.a} b=={plobj.b}");
         }
 
         [HttpGet("CreateGame")]
@@ -77,5 +96,11 @@ namespace Tabletop.Controllers
             Debug.Log(id);
             return id;
         }
+    }
+
+    public class PL
+    {
+        public string a { get; set; }
+        public string b { get; set; }
     }
 }
