@@ -1,14 +1,8 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using System.Linq;
-using System.IO;
-using System.Diagnostics;
-using Microsoft.AspNetCore.Http;
-using System.Net;
-using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace Tabletop
 {
@@ -69,7 +63,7 @@ namespace Tabletop
 
         public async void UpdatePlayerList()
         {
-            if(GM.Games[GameCode()].Players.Count > 0)
+            if (GM.Games[GameCode()].Players.Count > 0)
                 TableStatus(GM.Games[GameCode()].Players[0].Name + "'s Turn");
 
             await Clients.Group(GameCode()).SendAsync("UpdatePlayerList", GM.Games[GameCode()].Players);
@@ -100,7 +94,7 @@ namespace Tabletop
 
             name = name.Trim();
 
-            if(name == "")
+            if (name == "")
             {
                 try
                 {
@@ -155,11 +149,11 @@ namespace Tabletop
                 {
                     default:
                         TableSubStatus(
-                            Users[Context.ConnectionId].Username + " Played " 
+                            Users[Context.ConnectionId].Username + " Played "
                             + COLORS[pCard.Color] + " " + pCard.Number);
                         break;
 
-                    //case 10: //----- Pick Up 2 -----//
+                        //case 10: //----- Pick Up 2 -----//
                         //UpdateOtherHand(GM.Games[GameCode()].Players.First().ConnectionId);
                         //break;
                 }

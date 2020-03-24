@@ -17,29 +17,29 @@ export class DebugLog extends Component
         this.update();
     }
 
-    postTest()
-    {
-        var PL = {
-            a: 1,
-            b: 2
-        };
+    //postTest()
+    //{
+    //    var PL = {
+    //        a: 1,
+    //        b: 2
+    //    };
 
-        var data = new FormData();
-        data.append("PoLos", JSON.stringify(PL));
+    //    var data = new FormData();
+    //    data.append("PoLos", JSON.stringify(PL));
 
-        console.log(data);
+    //    console.log(data);
 
-        fetch('main/test',
-            {
-                method: "POST",
-                body: "TEST_BODY"
-            }).
-            then(response => response.text())
-            .then(data =>
-            {
-                console.log(data);
-            });
-    }
+    //    fetch('main/test',
+    //        {
+    //            method: "POST",
+    //            body: "TEST_BODY"
+    //        }).
+    //        then(response => response.text())
+    //        .then(data =>
+    //        {
+    //            console.log(data);
+    //        });
+    //}
 
     update()
     {

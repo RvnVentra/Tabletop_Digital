@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { JoinGame } from './JoinGame';
 import { CreateGame } from './CreateGame';
+import { Uno } from './Uno/Uno'
 
 export class Home extends Component
 {
@@ -11,13 +12,31 @@ export class Home extends Component
         super(props);
         this.state =
         {
-            gameState : null
+            gameState: null,
+            gameCode: null
         };
     }
 
     componentDidMount()
-    {
-        this.setState({ gameState: 'Home' });
+    {     
+        fetch('main/CheckGames',
+            {
+                headers:
+                {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(code =>
+            {
+                if (code == "0")
+                    this.setState({ gameState: 'Home' });
+                else
+                    this.setState({ gameState: 'Game', gameCode: code });
+
+                console.log("TEST: " + code);
+            });
     }
 
     joinGame()
@@ -48,6 +67,9 @@ export class Home extends Component
 
             case 'CreateGame':
                 return (<div><CreateGame /></div>);
+
+            case 'Game':
+                return (<div><Uno code={this.state.gameCode} playerName={this.state.gameCode} /></div>);
         }
     }
 }

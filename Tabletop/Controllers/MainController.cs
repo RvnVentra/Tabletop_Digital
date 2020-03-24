@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using System;
 using Tabletop.Models;
+using System.Linq;
 
 namespace Tabletop.Controllers
 {
@@ -38,29 +38,7 @@ namespace Tabletop.Controllers
             _context.SaveChanges();
 
             Debug.Log("ADD ACCOUNT: " + username);
-            return Ok(output);  
-        }
-
-        [HttpPost("test")]
-        public IActionResult Test(string pl)
-        {
-            Debug.Log("TEST");
-            Debug.Log(pl);
-
-            if (pl == null)
-            {
-                return Ok();
-            }
-
-            PL plobj = JsonConvert.DeserializeObject<PL>(pl);
-
-            Debug.Log(pl);
-            Debug.Log(plobj.a);
-            Debug.Log(plobj.b);
-
-
-
-            return Ok($"Test Test a=={plobj.a} b=={plobj.b}");
+            return Ok(output);
         }
 
         [HttpGet("CreateGame")]
@@ -76,6 +54,25 @@ namespace Tabletop.Controllers
         public bool JoinGame(string roomCode)
         {
             return GM.Games.ContainsKey(roomCode);
+        }
+
+        [HttpGet("CheckGames")]
+        public string CheckGames()
+        {
+            if (Request.Cookies["ClientId"] == null)
+                return "0";
+            else
+            {
+                string id = Request.Cookies["ClientId"];
+
+                foreach (User user in GameHub.Users.Values)
+                {
+                    if (user.ClientId == id)
+                        return user.GameCode;
+                }
+            }
+
+            return "0";
         }
 
         [HttpGet("ClientId")]
@@ -96,11 +93,5 @@ namespace Tabletop.Controllers
             Debug.Log(id);
             return id;
         }
-    }
-
-    public class PL
-    {
-        public string a { get; set; }
-        public string b { get; set; }
     }
 }
